@@ -16,7 +16,14 @@ module.exports = appInfo => {
   config.keys = appInfo.name + '_1584347320810_8594';
 
   // add your middleware config here
-  config.middleware = [];
+  config.middleware = [ 'errorHandler' ];
+
+  // config.security = {
+  //   csrf: {
+  //     enable: false,
+  //   },
+  //   domainWhiteList: [ 'http://localhost:8000' ],
+  // };
 
   // add your user config here
   const userConfig = {

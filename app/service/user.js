@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-03-16 18:53:20
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-03-16 19:49:58
+ * @LastEditTime: 2020-03-16 21:57:07
  */
 'use strict';
 
@@ -15,8 +15,8 @@ class UserService extends Service {
     return ctx.model.User.create(payload);
   }
 
-  // TODO: 删除用户m
-  async destory(_id) {
+  // TODO: 删除用户
+  async destroy(_id) {
     const { ctx } = this;
     const user = await ctx.service.user.find(_id);
     if (!user) {

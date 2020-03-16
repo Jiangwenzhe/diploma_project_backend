@@ -1,0 +1,57 @@
+{
+  "name": "diploma_project_backend",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "egg": {
+    "declarations": true
+  },
+  "dependencies": {
+    "egg": "^2.15.1",
+    "egg-scripts": "^2.11.0",
+    "await-stream-ready": "^1.0.1",
+    "egg-bcrypt": "^1.1.0",
+    "egg-cors": "^2.2.3",
+    "egg-jwt": "^3.1.7",
+    "egg-mongoose": "^3.2.0",
+    "egg-validate": "^2.0.2",
+    "image-downloader": "^3.5.0",
+    "mocha": "^7.1.0",
+    "moment": "^2.24.0",
+    "stream-to-array": "^2.3.0",
+    "stream-wormhole": "^1.1.0"
+  },
+  "devDependencies": {
+    "autod": "^3.0.1",
+    "autod-egg": "^1.1.0",
+    "egg-bin": "^4.14.1",
+    "egg-ci": "^1.13.1",
+    "egg-mock": "^4.0.0",
+    "eslint": "^6.8.0",
+    "eslint-config-egg": "^8.0.1"
+  },
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "scripts": {
+    "start": "egg-scripts start --daemon --title=egg-server-diploma_project_backend",
+    "stop": "egg-scripts stop --title=egg-server-diploma_project_backend",
+    "dev": "egg-bin dev",
+    "debug": "egg-bin debug",
+    "test": "npm run lint -- --fix && npm run test-local",
+    "test-local": "egg-bin test",
+    "cov": "egg-bin cov",
+    "lint": "eslint .",
+    "ci": "npm run lint && npm run cov",
+    "autod": "autod"
+  },
+  "ci": {
+    "version": "10"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "author": "Jiangwenzhe",
+  "license": "MIT"
+}

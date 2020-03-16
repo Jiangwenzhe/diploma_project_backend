@@ -18,16 +18,28 @@ module.exports = appInfo => {
   // add your middleware config here
   config.middleware = [ 'errorHandler' ];
 
-  // config.security = {
-  //   csrf: {
-  //     enable: false,
-  //   },
-  //   domainWhiteList: [ 'http://localhost:8000' ],
-  // };
+  config.security = {
+    csrf: {
+      enable: false,
+    },
+    // domainWhiteList: [ 'http://localhost:8000' ],
+  };
+
 
   // add your user config here
   const userConfig = {
     // myAppName: 'egg',
+  };
+
+  // 创建 mongoose 连接
+  config.mongoose = {
+    url: 'mongodb://127.0.0.1:27017/backend',
+    options: {
+      useMongoClient: true,
+      autoReconnect: true,
+      reconnectTries: Number.MAX_VALUE,
+      bufferMaxEntries: 0,
+    },
   };
 
   return {

@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-03-16 16:28:48
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-03-17 14:00:20
+ * @LastEditTime: 2020-03-17 23:04:11
  */
 'use strict';
 
@@ -10,8 +10,15 @@
  * @param {Egg.Application} app - egg application
  */
 module.exports = app => {
-  const { router, controller } = app;
+  const { router, controller, jwt } = app;
   router.get('/', controller.home.index);
+
+  // 用户访问 userAccess 相关操作路由
+  router.post('/api/user/access/login', controller.userAccess.login);
+  router.get('/api/user/access/current', jwt, controller.userAccess.current);
+  // router.get('/api/user/access/current', app.jwt, controller.userAccess.current);
+  // router.get('/api/user/access/logout', controller.userAccess.logout);
+  // router.put('/api/user/access/resetPsw', app.jwt, controller.userAccess.resetPsw);
 
   // 用户 user 操作相关路由 =============================
   router.post('/api/user', controller.user.createUser);

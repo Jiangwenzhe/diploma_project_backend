@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-03-16 18:53:20
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-03-17 14:00:01
+ * @LastEditTime: 2020-03-17 14:02:44
  */
 'use strict';
 
@@ -32,7 +32,6 @@ class UserService extends Service {
 
   // 更新用户
   async update(_id, payload) {
-    console.log('--updaye', _id, payload);
     const { ctx } = this;
     const user = await ctx.service.user.findById(_id);
     if (!user) {

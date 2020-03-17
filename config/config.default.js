@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-03-16 16:28:48
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-03-17 11:38:02
+ * @LastEditTime: 2020-03-17 22:52:23
  */
 /* eslint valid-jsdoc: "off" */
 
@@ -28,9 +28,7 @@ module.exports = appInfo => {
     csrf: {
       enable: false,
     },
-    // domainWhiteList: [ 'http://localhost:8000' ],
   };
-
 
   // add your user config here
   const userConfig = {
@@ -46,6 +44,13 @@ module.exports = appInfo => {
       reconnectTries: Number.MAX_VALUE,
       bufferMaxEntries: 0,
     },
+  };
+
+  // jwt
+  config.jwt = {
+    secret: 'wenzhe',
+    enable: true, // default is false
+    match: '/jwt', // optional
   };
 
   return {

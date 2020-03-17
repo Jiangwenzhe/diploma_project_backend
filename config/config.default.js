@@ -1,3 +1,9 @@
+/*
+ * @Author: Wenzhe
+ * @Date: 2020-03-16 16:28:48
+ * @LastEditors: Wenzhe
+ * @LastEditTime: 2020-03-17 11:38:02
+ */
 /* eslint valid-jsdoc: "off" */
 
 'use strict';
@@ -35,7 +41,7 @@ module.exports = appInfo => {
   config.mongoose = {
     url: 'mongodb://127.0.0.1:27017/backend',
     options: {
-      useMongoClient: true,
+      useUnifiedTopology: true,
       autoReconnect: true,
       reconnectTries: Number.MAX_VALUE,
       bufferMaxEntries: 0,

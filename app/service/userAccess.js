@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-03-17 16:14:04
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-03-17 23:05:41
+ * @LastEditTime: 2020-03-18 11:34:17
  */
 'use strict';
 
@@ -27,7 +27,6 @@ class UserAccessService extends Service {
     const { ctx, service } = this;
     // ctx.state.user 可以提取到JWT编码的data
     const _id = ctx.state.user.data._id;
-    console.log('--------------', ctx.state.user);
     const user = await service.user.findById(_id);
     if (!user) {
       ctx.throw(404, 'user is not found');

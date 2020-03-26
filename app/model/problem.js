@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-03-26 12:17:36
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-03-26 18:17:09
+ * @LastEditTime: 2020-03-26 18:18:32
  */
 'use strict';
 
@@ -11,13 +11,14 @@ module.exports = app => {
   const mongoose = app.mongoose;
   const ProblemSchema = new mongoose.Schema({
     isdone: Boolean,
+    // 这里的 pid 可以自增
+    // 考虑 default 使用时间戳代替，以免当系统出现问题时，pid 没有输入
     pid: {
       required: true,
       type: Number,
       index: {
         unique: true,
       },
-      // default: -1, // 表示新题目
     },
     detail: {
       type: String,

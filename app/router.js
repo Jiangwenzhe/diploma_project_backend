@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-03-16 16:28:48
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-03-26 16:10:57
+ * @LastEditTime: 2020-03-28 14:34:39
  */
 'use strict';
 
@@ -28,4 +28,5 @@ module.exports = app => {
 
   // 题目 problem 操作相关路由 =============================
   router.post('/api/problem', controller.problems.createProblem);
+  router.get('/api/problem', controller.problems.index);
 };

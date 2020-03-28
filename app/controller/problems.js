@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-03-26 15:02:40
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-03-26 18:22:41
+ * @LastEditTime: 2020-03-28 14:33:55
  */
 'use strict';
 
@@ -17,6 +17,17 @@ class ProblemsController extends Controller {
     // 组装参数
     const payload = ctx.request.body || {};
     const res = await service.problem.create(payload);
+    // 设置响应内容和响应状态码
+    ctx.helper.success({ ctx, res });
+  }
+
+  // 获取所有题目(分页/模糊)
+  async index() {
+    const { ctx, service } = this;
+    // 组装参数
+    const payload = ctx.query;
+    // 调用 Service 进行业务处理
+    const res = await service.problem.index(payload);
     // 设置响应内容和响应状态码
     ctx.helper.success({ ctx, res });
   }

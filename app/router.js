@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-03-16 16:28:48
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-03-28 14:34:39
+ * @LastEditTime: 2020-03-28 20:16:32
  */
 'use strict';
 
@@ -11,7 +11,7 @@
  */
 module.exports = app => {
   const { router, controller, jwt } = app;
-  router.get('/', controller.home.index);
+  router.get('/api', controller.home.index);
 
   // 用户访问 userAccess 相关操作路由
   router.post('/api/user/access/login', controller.userAccess.login);

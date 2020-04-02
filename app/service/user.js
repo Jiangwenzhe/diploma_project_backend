@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-03-16 18:53:20
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-03-26 18:13:33
+ * @LastEditTime: 2020-04-02 15:16:14
  */
 'use strict';
 
@@ -17,7 +17,14 @@ class UserService extends Service {
     if (doc) {
       ctx.throw(400, '用户名已被占用');
     }
-    return ctx.model.User.create(payload);
+    const createdID = await ctx.service.id.createId('User');
+    const newPayload = { ...payload, uid: createdID.id };
+    try {
+      const res = ctx.model.User.create(newPayload);
+      return res;
+    } catch (e) {
+      ctx.throw(400, e);
+    }
   }
 
   // 删除用户

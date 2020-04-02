@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-03-26 12:17:36
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-03-26 18:18:32
+ * @LastEditTime: 2020-04-02 10:22:40
  */
 'use strict';
 
@@ -33,7 +33,7 @@ module.exports = app => {
       type: Number,
       default: 32768,
       min: 100,
-      max: 32768 * 4,
+      max: 32768 * 500,
     },
     title: {
       type: String,
@@ -85,16 +85,16 @@ module.exports = app => {
     },
   });
 
-  ProblemSchema.pre('validate', function(next) {
-    // 验证字段
-    if (this.time > 10000) {
-      next(new Error('Time should not be longer than 10000 ms'));
-    } else if (this.memory > 32768 * 5) {
-      next(new Error(`Memory should not be greater than ${32768 * 5} kb`));
-    } else {
-      next();
-    }
-  });
+  // ProblemSchema.pre('validate', function(next) {
+  //   // 验证字段
+  //   if (this.time > 10000) {
+  //     next(new Error('Time should not be longer than 10000 ms'));
+  //   } else if (this.memory > 32768 * 5) {
+  //     next(new Error(`Memory should not be greater than ${32768 * 5} kb`));
+  //   } else {
+  //     next();
+  //   }
+  // });
 
   return mongoose.model('Problem', ProblemSchema);
 };

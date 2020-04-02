@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-03-26 14:55:02
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-03-28 14:40:34
+ * @LastEditTime: 2020-04-02 17:31:12
  */
 
 'use strict';
@@ -17,7 +17,7 @@ class ProblemsService extends Service {
     const CreatedID = await ctx.service.id.createId('Problem');
     const newPayload = { ...payload, pid: CreatedID.id };
     try {
-      const res = ctx.model.Problem.create(newPayload);
+      const res = await ctx.model.Problem.create(newPayload);
       // TODO: 后期可能需要加入写入 testcase 的活
       return res;
     } catch (e) {

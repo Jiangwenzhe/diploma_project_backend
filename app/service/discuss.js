@@ -2,19 +2,19 @@
  * @Author: Wenzhe
  * @Date: 2020-04-02 15:58:23
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-04-02 18:05:13
+ * @LastEditTime: 2020-04-02 20:58:12
  */
 'use strict';
 
 const Service = require('egg').Service;
 
 class DiscussService extends Service {
-  // create ==================================================
+  // ======================================= create =======================================
+  // 创建新的 discuss / article
   async create(payload) {
     const { ctx, service } = this;
     const _id = ctx.state.user.data._id;
     const { name, avatar } = await service.user.findById(_id);
-    console.log('================1', payload);
     const newPayload = {
       ...payload,
       author: {
@@ -23,7 +23,6 @@ class DiscussService extends Service {
       },
       author_id: _id,
     };
-    console.log('================', newPayload);
     try {
       const res = await ctx.model.Discuss.create(newPayload);
       return res;
@@ -32,27 +31,38 @@ class DiscussService extends Service {
     }
   }
 
-  // create comment ====================================
-  /**
-   *
-   * @param {*} payload
-   *     const comment = new mongoose.Schema({
-   *     user_id: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-    },
-      username: String,
-      avatar_utl: String,
-      content: {
-        type: String,
-        default: '',
-      },
-      createdAt: {
-        type: Date,
-        default: Date.now,
-      },
-    });
-   */
+  // ======================================= delete =======================================
+  // TODO：删除 单篇文章
+  // async delete(id) {}
+
+  // TODO: 批量删除 文章 重要性低
+  // async deleteMulti(ids) {}
+
+  // ======================================= update =======================================
+  // TODO：修改 单篇文章的内容
+  // async update(id, payload) {}
+
+
+  // ======================================= search =======================================
+  // 通过id查询discuss
+  async findById(_id) {
+    const { ctx } = this;
+    return ctx.model.Discuss.findById(_id);
+  }
+
+  // TODO：获取所有的文章，需要支持 antd 的分页
+  // 1. 按照 category, tag,关键词 query 进行搜索
+  // async index(payload)
+
+  // ======================================= others =======================================
+  // TODO: 为单个文章点赞 👍 like + 1, dislike -1, 可能需要 $inc 操作符
+  // async like(_id) {}
+
+  // TODO: 为单个文章倒赞  dislike + 1, like -1
+  // async dislike(_id) {}
+
+  // ==================================== comment ====================================
+  // 添加一条评论，如果有时间，为评论加入点赞
   async createComment(duscuss_id, payload) {
     const { ctx, service } = this;
     const user_id = ctx.state.user.data._id;
@@ -83,12 +93,8 @@ class DiscussService extends Service {
     }
   }
 
-  // 通过id查询discuss
-  async findById(_id) {
-    const { ctx } = this;
-    return ctx.model.Discuss.findById(_id);
-  }
-
+  // TODO: 删除评论
+  // async deleteComment(duscuss_id, _id)
 }
 
 module.exports = DiscussService;

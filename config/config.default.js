@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-03-16 16:28:48
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-03-28 13:55:42
+ * @LastEditTime: 2020-04-02 15:13:24
  */
 /* eslint valid-jsdoc: "off" */
 
@@ -43,6 +43,7 @@ module.exports = appInfo => {
       useCreateIndex: true,
       useUnifiedTopology: true,
       bufferMaxEntries: 0,
+      useFindAndModify: false,
     },
   };
 

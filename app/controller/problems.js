@@ -2,14 +2,14 @@
  * @Author: Wenzhe
  * @Date: 2020-03-26 15:02:40
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-03-28 14:33:55
+ * @LastEditTime: 2020-04-02 16:01:07
  */
 'use strict';
 
 const Controller = require('egg').Controller;
 
 class ProblemsController extends Controller {
-  // 创建用户
+  // 创建题目
   async createProblem() {
     const { ctx, service } = this;
     // TODO: 校验传入参数

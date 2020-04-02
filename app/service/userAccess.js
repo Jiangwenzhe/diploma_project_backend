@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-03-17 16:14:04
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-03-18 11:34:17
+ * @LastEditTime: 2020-04-02 16:11:06
  */
 'use strict';
 
@@ -20,7 +20,7 @@ class UserAccessService extends Service {
       ctx.throw(404, '你的密码错了');
     }
     // 生成 Token
-    return { token: await service.makeToken.apply(user._id) };
+    return { token: await service.makeToken.apply(user._id, user.privilege, user.name) };
   }
 
   async current() {

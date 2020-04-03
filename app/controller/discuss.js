@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-04-02 16:00:24
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-04-03 11:17:43
+ * @LastEditTime: 2020-04-03 11:34:31
  */
 'use strict';
 
@@ -41,6 +41,18 @@ class DiscussController extends Controller {
       ctx.throw(400, 'id参数错误');
     }
     const res = await service.discuss.findById(id);
+    ctx.helper.success({ ctx, res });
+  }
+
+  // 修改单篇文章
+  async updateDiscuss() {
+    const { ctx, service } = this;
+    const { id } = ctx.params;
+    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+      ctx.throw(400, 'id参数错误');
+    }
+    const payload = ctx.request.body || {};
+    const res = await service.discuss.update(id, payload);
     ctx.helper.success({ ctx, res });
   }
 

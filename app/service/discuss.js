@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-04-02 15:58:23
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-04-03 11:22:34
+ * @LastEditTime: 2020-04-03 11:46:18
  */
 'use strict';
 
@@ -63,7 +63,26 @@ class DiscussService extends Service {
   // ======================================= update =======================================
   // TODO：修改 单篇文章的内容
   // async update(id, payload) {}
-
+  async update(_id, payload) {
+    const { ctx } = this;
+    const discuss = await ctx.service.discuss.findById(_id);
+    if (!discuss) {
+      ctx.throw(404, 'discuss not found');
+    }
+    const author_id = discuss.author_id;
+    if (author_id.toString() === ctx.state.user.data._id.toString() || ctx.state.user.data.privilege === 3) {
+      try {
+        const res = await ctx.model.Discuss.findByIdAndUpdate(_id, payload, { new: true });
+        return {
+          status: '修改成功',
+          newValue: res,
+        };
+      } catch (e) {
+        throw new Error(400, e);
+      }
+    }
+    throw new Error(400, '当前用户没有权限编辑该文章');
+  }
 
   // ======================================= search =======================================
   // 通过id查询 discuss

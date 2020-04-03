@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-03-16 16:28:48
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-04-03 11:16:27
+ * @LastEditTime: 2020-04-03 11:35:44
  */
 'use strict';
 
@@ -33,6 +33,7 @@ module.exports = app => {
   // 讨论/文章 discuss 操作相关的路由 ========================
   router.post('/api/discuss', jwt, controller.discuss.createDiscuss);
   router.get('/api/discuss/:id', controller.discuss.findSingleDiscussById);
+  router.put('/api/discuss/:id', jwt, controller.discuss.updateDiscuss);
   router.delete('/api/discuss/:id', jwt, controller.discuss.destroyDiscuss);
   router.post('/api/discuss/comment/:id', jwt, controller.discuss.createComment);
   // router.get('/api/discuss/like/:id', jwt, controller.discuss.like);

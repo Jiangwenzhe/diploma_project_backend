@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-04-02 10:09:50
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-04-02 17:25:16
+ * @LastEditTime: 2020-04-03 10:44:30
  */
 
 'use strict';
@@ -72,6 +72,11 @@ module.exports = app => {
       type: Number,
       default: 0,
     },
+    // likeList: {
+    //   type: [ String ],
+    //   default: [],
+    //   unique: true,
+    // },
     dislike: {
       type: Number,
       default: 0,

@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-04-02 15:58:23
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-04-02 20:58:12
+ * @LastEditTime: 2020-04-03 10:47:19
  */
 'use strict';
 
@@ -35,7 +35,7 @@ class DiscussService extends Service {
   // TODO：删除 单篇文章
   // async delete(id) {}
 
-  // TODO: 批量删除 文章 重要性低
+  // TODO: 低优先级 批量删除 文章
   // async deleteMulti(ids) {}
 
   // ======================================= update =======================================
@@ -44,7 +44,7 @@ class DiscussService extends Service {
 
 
   // ======================================= search =======================================
-  // 通过id查询discuss
+  // 通过id查询 discuss
   async findById(_id) {
     const { ctx } = this;
     return ctx.model.Discuss.findById(_id);
@@ -55,10 +55,28 @@ class DiscussService extends Service {
   // async index(payload)
 
   // ======================================= others =======================================
-  // TODO: 为单个文章点赞 👍 like + 1, dislike -1, 可能需要 $inc 操作符
-  // async like(_id) {}
+  // TODO: 低优先级 为单个文章点赞 👍 like + 1, 可能需要 $inc 操作符
+  // async like(_id) {
+  // const { ctx } = this;
+  // const currentUserID = ctx.state.user.data._id;
+  // const likeList = await ctx.model.Discuss.findById({ _id }, { likeList: 1 });
+  // console.log('-----------------123', typeof likeList, likeList);
+  // if ([ ...likeList ].includes(currentUserID.toString())) {
+  //   throw new Error('你之前已经点赞过啦');
+  // }
+  // try {
+  //   await ctx.model.Discuss.findByIdAndUpdate(
+  //     { _id },
+  //     { $inc: { like: 1 }, $push: { likeList: currentUserID } },
+  //     { upsert: true, new: true });
+  //   const res = await ctx.model.Discuss.findById({ _id }, { _id: 1, like: 1, title: 1 });
+  //   return res;
+  // } catch (e) {
+  //   ctx.throw(400, e);
+  // }
+  // }
 
-  // TODO: 为单个文章倒赞  dislike + 1, like -1
+  // TODO: 低优先级 为单个文章倒赞  dislike + 1,
   // async dislike(_id) {}
 
   // ==================================== comment ====================================

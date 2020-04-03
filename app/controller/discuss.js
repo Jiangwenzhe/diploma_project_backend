@@ -2,14 +2,14 @@
  * @Author: Wenzhe
  * @Date: 2020-04-02 16:00:24
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-04-02 17:43:42
+ * @LastEditTime: 2020-04-03 10:52:28
  */
 'use strict';
 
 const Controller = require('egg').Controller;
 
 class DiscussController extends Controller {
-  // 创建题目
+  // 创建文章
   async createDiscuss() {
     const { ctx, service } = this;
     // TODO: 校验传入参数
@@ -18,6 +18,17 @@ class DiscussController extends Controller {
     const payload = ctx.request.body || {};
     const res = await service.discuss.create(payload);
     // 设置响应内容和响应状态码
+    ctx.helper.success({ ctx, res });
+  }
+
+  // 获取单篇文章
+  async findSingleDiscussById() {
+    const { ctx, service } = this;
+    const { id } = ctx.params;
+    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+      ctx.throw(400, 'id参数错误');
+    }
+    const res = await service.discuss.findById(id);
     ctx.helper.success({ ctx, res });
   }
 
@@ -30,6 +41,17 @@ class DiscussController extends Controller {
     const res = await service.discuss.createComment(id, payload);
     ctx.helper.success({ ctx, res });
   }
+
+  // 点赞一篇文章
+  // async like() {
+  //   const { ctx, service } = this;
+  //   const { id } = ctx.params;
+  //   if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+  //     ctx.throw(400, 'id参数错误');
+  //   }
+  //   const res = await service.discuss.like(id);
+  //   ctx.helper.success({ ctx, res });
+  // }
 }
 
 module.exports = DiscussController;

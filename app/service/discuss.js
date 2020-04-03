@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-04-02 15:58:23
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-04-03 10:47:19
+ * @LastEditTime: 2020-04-03 11:22:34
  */
 'use strict';
 
@@ -32,8 +32,30 @@ class DiscussService extends Service {
   }
 
   // ======================================= delete =======================================
-  // TODO：删除 单篇文章
-  // async delete(id) {}
+  // 删除 单篇文章
+  async destroy(_id) {
+    const { ctx } = this;
+    const discuss = await ctx.service.discuss.findById(_id);
+    if (!discuss) {
+      ctx.throw(404, 'discuss not found');
+    }
+    // console.log('--------discuss', discuss);
+    // 对用户时候有权限删除这篇文章做校验
+    const author_id = discuss.author_id;
+    // console.log('------------author', author_id, ctx.state.user);
+    // console.log('-------------author compare', author_id.toString() === ctx.state.user.data._id.toString());
+    //
+    if (author_id.toString() === ctx.state.user.data._id.toString() || ctx.state.user.data.privilege === 3) {
+      try {
+        await ctx.model.Discuss.findByIdAndRemove(_id);
+        return '删除成功';
+      } catch (e) {
+        throw new Error(400, e);
+      }
+
+    }
+    throw new Error(400, '当前用户没有权限删除该文章');
+  }
 
   // TODO: 低优先级 批量删除 文章
   // async deleteMulti(ids) {}

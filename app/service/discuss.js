@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-04-02 15:58:23
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-04-03 11:46:18
+ * @LastEditTime: 2020-04-03 19:03:00
  */
 'use strict';
 
@@ -91,9 +91,40 @@ class DiscussService extends Service {
     return ctx.model.Discuss.findById(_id);
   }
 
-  // TODO：获取所有的文章，需要支持 antd 的分页
-  // 1. 按照 category, tag,关键词 query 进行搜索
-  // async index(payload)
+  // 获取所有的文章，需要支持 antd 的分页
+  // 1. 按照 category, tag,关键词 title 进行搜索
+  async index(payload) {
+    // console.log('----------payload', payload);
+    const { ctx } = this;
+    const { current, pageSize, category, title, tag } = payload;
+    const query = {};
+    let res = [];
+    let total = 0;
+    // 计算 skip
+    const skip = ((Number(current)) - 1) * Number(pageSize || 10);
+    // 组装 query
+    if (category) {
+      query.category = category;
+    }
+    if (title) {
+      query.title = new RegExp(title, 'i');
+    }
+    // 如果包含需要转义的字符，前端需要 encode
+    if (tag) {
+      // console.log('--------------', tag);
+      const tags = tag.split(',');
+      query.tags = {
+        $all: tags,
+      };
+    }
+    // console.log('--------------query', query);
+    // 索取所有题目的数量
+    total = await ctx.model.Discuss.count(query).exec();
+    res = await this.ctx.model.Discuss.find(query, { title: 1, tags: 1, category: 1, author: 1 }).skip(skip).limit(Number(pageSize))
+      .sort({ createdAt: -1 })
+      .exec();
+    return { total, list: res, pageSize, current };
+  }
 
   // ======================================= others =======================================
   // TODO: 低优先级 为单个文章点赞 👍 like + 1, 可能需要 $inc 操作符

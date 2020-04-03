@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-04-02 16:00:24
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-04-03 11:34:31
+ * @LastEditTime: 2020-04-03 17:49:06
  */
 'use strict';
 
@@ -18,6 +18,14 @@ class DiscussController extends Controller {
     const payload = ctx.request.body || {};
     const res = await service.discuss.create(payload);
     // 设置响应内容和响应状态码
+    ctx.helper.success({ ctx, res });
+  }
+
+  // 获取所有文章(分页/模糊)
+  async index() {
+    const { ctx, service } = this;
+    const payload = ctx.query;
+    const res = await service.discuss.index(payload);
     ctx.helper.success({ ctx, res });
   }
 

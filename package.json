@@ -7,19 +7,21 @@
     "declarations": true
   },
   "dependencies": {
-    "egg": "^2.15.1",
-    "egg-scripts": "^2.11.0",
     "await-stream-ready": "^1.0.1",
+    "egg": "^2.15.1",
     "egg-bcrypt": "^1.1.0",
     "egg-cors": "^2.2.3",
     "egg-jwt": "^3.1.7",
     "egg-mongoose": "^3.2.0",
+    "egg-scripts": "^2.11.0",
     "egg-validate": "^2.0.2",
+    "form-data": "^3.0.0",
     "image-downloader": "^3.5.0",
     "mocha": "^7.1.0",
     "moment": "^2.24.0",
     "stream-to-array": "^2.3.0",
-    "stream-wormhole": "^1.1.0"
+    "stream-wormhole": "^1.1.0",
+    "superagent": "^5.2.2"
   },
   "devDependencies": {
     "autod": "^3.0.1",

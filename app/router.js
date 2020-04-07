@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-03-16 16:28:48
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-04-04 17:47:19
+ * @LastEditTime: 2020-04-07 15:39:07
  */
 'use strict';
 
@@ -27,8 +27,11 @@ module.exports = app => {
   router.put('/api/user/:id', controller.user.updateUser);
 
   // 题目 problem 操作相关路由 =============================
-  router.post('/api/problem', controller.problems.createProblem);
-  router.get('/api/problem', controller.problems.index);
+  router.post('/api/problem', controller.problem.createProblem);
+  router.get('/api/problem', controller.problem.index);
+  router.get('/api/problem/:id', controller.problem.findSingleProblemById);
+  router.get('/api/problem/testcase/:id', controller.problem.getTestCaseOfAProblemById);
+  router.put('/api/problem/:id', controller.problem.updateProblem);
 
   // 题目执行用例 testcase 操作相关路由
   router.post('/api/testcase', controller.testcase.uploadTestcase);

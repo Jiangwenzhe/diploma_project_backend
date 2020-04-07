@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-03-26 14:55:02
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-04-02 17:31:12
+ * @LastEditTime: 2020-04-07 15:47:32
  */
 
 'use strict';
@@ -17,15 +17,33 @@ class ProblemsService extends Service {
     const CreatedID = await ctx.service.id.createId('Problem');
     const newPayload = { ...payload, pid: CreatedID.id };
     try {
+      // 有关于导入 testcase 的问题就直接在内容中指定字段就可以了
       const res = await ctx.model.Problem.create(newPayload);
-      // TODO: 后期可能需要加入写入 testcase 的活
       return res;
     } catch (e) {
       ctx.throw(400, e);
     }
   }
+  // ======================================= update =======================================
+  async update(_id, payload) {
+    const { ctx } = this;
+    const problem = await ctx.service.problem.findById(_id);
+    if (!problem) {
+      ctx.throw(404, 'discuss not found');
+    }
+    try {
+      const res = await ctx.model.Problem.findByIdAndUpdate(_id, payload, { new: true });
+      return {
+        status: '修改成功',
+        newValue: res,
+      };
+    } catch (e) {
+      throw new Error(400, e);
+    }
+  }
 
-  // TODO: 获取所有题目，需要支持 antd 分页
+  // ======================================= search =======================================
+  // 获取所有题目，需要支持 antd 分页
   async index(payload) {
     // TODO: 需要添加关键字模糊搜索 注意参考 leetcode 的实现
     const { current, pageSize } = payload;
@@ -40,6 +58,12 @@ class ProblemsService extends Service {
       .sort({ createdAt: -1 })
       .exec();
     return { total, list: res, pageSize, current };
+  }
+
+  // 通过 id 查询 problem
+  async findById(_id) {
+    const { ctx } = this;
+    return ctx.model.Problem.findById(_id);
   }
 
 }

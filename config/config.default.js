@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-03-16 16:28:48
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-04-02 15:13:24
+ * @LastEditTime: 2020-04-07 11:49:36
  */
 /* eslint valid-jsdoc: "off" */
 
@@ -53,6 +53,9 @@ module.exports = appInfo => {
     enable: true, // default is false
     match: '/jwt', // optional
   };
+
+  // 用户自定义静态文件
+  config.TestCaseUploadServer = 'http://127.0.0.1:8100/testcase/';
 
   return {
     ...config,

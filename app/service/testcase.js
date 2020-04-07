@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-04-04 17:49:06
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-04-07 11:54:45
+ * @LastEditTime: 2020-04-07 16:04:17
  */
 'use strict';
 
@@ -42,6 +42,12 @@ class TestcaseService extends Service {
     } catch (e) {
       ctx.throw(400, e);
     }
+  }
+
+  // 通过 id 查询
+  async findByTestCaseId(id) {
+    const { ctx } = this;
+    return ctx.model.Testcase.findOne({ test_case_id: id });
   }
 
 }

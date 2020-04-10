@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-03-26 14:55:02
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-04-07 15:47:32
+ * @LastEditTime: 2020-04-10 09:52:35
  */
 
 'use strict';
@@ -46,15 +46,25 @@ class ProblemsService extends Service {
   // 获取所有题目，需要支持 antd 分页
   async index(payload) {
     // TODO: 需要添加关键字模糊搜索 注意参考 leetcode 的实现
-    const { current, pageSize } = payload;
     const { ctx } = this;
+    const { current, pageSize, title, tag } = payload;
+    const query = {};
     let res = [];
     let total = 0;
     // 计算skip
     const skip = ((Number(current)) - 1) * Number(pageSize || 10);
+    if (title) {
+      query.title = new RegExp(title, 'i');
+    }
+    if (tag) {
+      const tags = tag.split(',');
+      query.tags = {
+        $all: tags,
+      };
+    }
     // 索取所有题目的数量
-    total = await ctx.model.Problem.count({}).exec();
-    res = await this.ctx.model.Problem.find({}, { title: 1, tags: 1, submit: 1, solve: 1 }).skip(skip).limit(Number(pageSize))
+    total = await ctx.model.Problem.count(query).exec();
+    res = await this.ctx.model.Problem.find(query).skip(skip).limit(Number(pageSize))
       .sort({ createdAt: -1 })
       .exec();
     return { total, list: res, pageSize, current };

@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-03-17 16:14:04
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-04-02 16:11:06
+ * @LastEditTime: 2020-04-09 08:45:52
  */
 'use strict';
 
@@ -10,17 +10,21 @@ const Service = require('egg').Service;
 
 class UserAccessService extends Service {
   async login(payload) {
-    const { ctx, service } = this;
+    const { service } = this;
     const user = await service.user.findByName(payload.name);
-    if (!user) {
-      ctx.throw(404, '找不到该用户');
-    }
+    // if (!user) {
+    //   ctx.throw(404, '找不到该用户');
+    // }
     const verifyPsw = (payload.password === user.password);
-    if (!verifyPsw) {
-      ctx.throw(404, '你的密码错了');
+    // if (!verifyPsw) {
+    //   ctx.throw(404, '你的密码错了');
+    // }
+    if (!user || !verifyPsw) {
+      return { status: 'error' };
     }
+    const currentAuthority = user.privilege === 3 ? 'admin' : 'user';
     // 生成 Token
-    return { token: await service.makeToken.apply(user._id, user.privilege, user.name) };
+    return { currentAuthority, status: 'ok', token: await service.makeToken.apply(user._id, user.privilege, user.name) };
   }
 
   async current() {

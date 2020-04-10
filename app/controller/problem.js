@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-03-26 15:02:40
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-04-07 17:20:46
+ * @LastEditTime: 2020-04-10 09:10:29
  */
 'use strict';
 
@@ -21,6 +21,17 @@ class ProblemsController extends Controller {
     const payload = ctx.request.body || {};
     const res = await service.problem.create(payload);
     // 设置响应内容和响应状态码
+    ctx.helper.success({ ctx, res });
+  }
+
+  async deleteProblem() {
+    const { ctx, service } = this;
+    const { id } = ctx.params;
+    // TODO: 加入权限管理
+    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+      ctx.throw(400, 'id参数错误');
+    }
+    const res = await service.problem.delete(id);
     ctx.helper.success({ ctx, res });
   }
 

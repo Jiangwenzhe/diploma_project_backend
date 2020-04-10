@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-03-26 14:55:02
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-04-10 09:52:35
+ * @LastEditTime: 2020-04-10 14:33:46
  */
 
 'use strict';
@@ -29,7 +29,7 @@ class ProblemsService extends Service {
     const { ctx } = this;
     const problem = await ctx.service.problem.findById(_id);
     if (!problem) {
-      ctx.throw(404, 'discuss not found');
+      ctx.throw(404, 'problem not found');
     }
     try {
       const res = await ctx.model.Problem.findByIdAndUpdate(_id, payload, { new: true });
@@ -41,7 +41,23 @@ class ProblemsService extends Service {
       throw new Error(400, e);
     }
   }
-
+  // ======================================= delete =======================================
+  async delete(_id) {
+    const { ctx } = this;
+    const problem = await ctx.service.problem.findById(_id);
+    if (!problem) {
+      ctx.throw(404, 'problem not found');
+    }
+    try {
+      const res = await ctx.model.Problem.findByIdAndRemove(_id);
+      return {
+        status: '删除成功',
+        res,
+      };
+    } catch (e) {
+      throw new Error(400, e);
+    }
+  }
   // ======================================= search =======================================
   // 获取所有题目，需要支持 antd 分页
   async index(payload) {

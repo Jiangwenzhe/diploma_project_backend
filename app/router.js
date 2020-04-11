@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-03-16 16:28:48
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-04-10 14:30:41
+ * @LastEditTime: 2020-04-11 12:52:18
  */
 'use strict';
 
@@ -45,4 +45,8 @@ module.exports = app => {
   router.delete('/api/discuss/:id', jwt, controller.discuss.destroyDiscuss);
   router.post('/api/discuss/comment/:id', jwt, controller.discuss.createComment);
   // router.get('/api/discuss/like/:id', jwt, controller.discuss.like);
+
+  // Tag 操作相关的路由 ================================
+  router.post('/api/problemtag', controller.problemTag.createTag);
+  router.get('/api/problemtag', controller.problemTag.index);
 };

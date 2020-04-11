@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-03-26 12:17:36
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-04-07 15:34:27
+ * @LastEditTime: 2020-04-11 10:37:52
  */
 'use strict';
 
@@ -31,9 +31,9 @@ module.exports = app => {
     },
     limit_memory: {
       type: Number,
-      default: 32768,
-      min: 100,
-      max: 32768 * 500,
+      default: 256,
+      // min: 100,
+      // max: 32768 * 500,
     },
     title: {
       type: String,
@@ -47,19 +47,11 @@ module.exports = app => {
       type: String,
       default: '',
     },
-    input: {
+    sample_input: {
       type: String,
       default: '',
     },
-    output: {
-      type: String,
-      default: '',
-    },
-    in: {
-      type: String,
-      default: '',
-    },
-    out: {
+    sample_output: {
       type: String,
       default: '',
     },
@@ -89,6 +81,13 @@ module.exports = app => {
     },
     test_case_id: String,
     test_case_score: [ Object ],
+    difficulty: {
+      type: 'String',
+    },
+    visible: {
+      type: Boolean,
+      default: true,
+    },
   });
 
   return mongoose.model('Problem', ProblemSchema);

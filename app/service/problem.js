@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-03-26 14:55:02
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-04-10 14:33:46
+ * @LastEditTime: 2020-04-11 14:20:08
  */
 
 'use strict';
@@ -13,7 +13,11 @@ class ProblemsService extends Service {
   // 新建题目
   // TODO: 加入参数校验
   async create(payload) {
-    const { ctx } = this;
+    const { ctx, service } = this;
+    const { tags } = payload;
+    for (let i = 0; i < tags.length; i++) {
+      await service.problemTag.create({ name: tags[i] });
+    }
     const CreatedID = await ctx.service.id.createId('Problem');
     const newPayload = { ...payload, pid: CreatedID.id };
     try {

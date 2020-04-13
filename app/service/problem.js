@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-03-26 14:55:02
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-04-11 14:20:08
+ * @LastEditTime: 2020-04-13 17:26:49
  */
 
 'use strict';
@@ -36,7 +36,9 @@ class ProblemsService extends Service {
       ctx.throw(404, 'problem not found');
     }
     try {
-      const res = await ctx.model.Problem.findByIdAndUpdate(_id, payload, { new: true });
+      const res = await ctx.model.Problem.findByIdAndUpdate(_id, payload, {
+        new: true,
+      });
       return {
         status: '修改成功',
         newValue: res,
@@ -72,7 +74,7 @@ class ProblemsService extends Service {
     let res = [];
     let total = 0;
     // 计算skip
-    const skip = ((Number(current)) - 1) * Number(pageSize || 10);
+    const skip = (Number(current) - 1) * Number(pageSize || 10);
     if (title) {
       query.title = new RegExp(title, 'i');
     }
@@ -84,8 +86,10 @@ class ProblemsService extends Service {
     }
     // 索取所有题目的数量
     total = await ctx.model.Problem.count(query).exec();
-    res = await this.ctx.model.Problem.find(query).skip(skip).limit(Number(pageSize))
-      .sort({ createdAt: -1 })
+    res = await this.ctx.model.Problem.find(query)
+      .skip(skip)
+      .limit(Number(pageSize))
+      .sort({ create: -1 })
       .exec();
     return { total, list: res, pageSize, current };
   }
@@ -96,6 +100,33 @@ class ProblemsService extends Service {
     return ctx.model.Problem.findById(_id);
   }
 
+  // 通过 pid 获取单个题目
+  async findByProblemId(pid) {
+    const { ctx } = this;
+    return ctx.model.Problem.findOne({ pid });
+  }
+
+  // 通过 _id 来添加解答信息
+  async createStatusInfo(_id, judge_result) {
+    const { service, ctx } = this;
+    const { status_info, solve, submit } = await service.problem.findById(_id);
+    let new_submit = submit;
+    new_submit += 1;
+    let new_solve = solve;
+    if (judge_result === 0) {
+      new_solve += 1;
+    }
+    const new_status_info = status_info ? JSON.parse(JSON.stringify(status_info)) : {};
+    let current_result_count = new_status_info[judge_result] ? new_status_info[judge_result] : 0;
+    current_result_count += 1;
+    new_status_info[judge_result] = current_result_count;
+    const res = await ctx.model.Problem.findByIdAndUpdate(
+      _id,
+      { status_info: new_status_info, submit: new_submit, solve: new_solve },
+      { new: true }
+    );
+    return res;
+  }
 }
 
 module.exports = ProblemsService;

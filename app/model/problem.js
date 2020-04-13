@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-03-26 12:17:36
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-04-11 10:37:52
+ * @LastEditTime: 2020-04-13 16:59:56
  */
 'use strict';
 
@@ -32,8 +32,6 @@ module.exports = app => {
     limit_memory: {
       type: Number,
       default: 256,
-      // min: 100,
-      // max: 32768 * 500,
     },
     title: {
       type: String,
@@ -87,6 +85,10 @@ module.exports = app => {
     visible: {
       type: Boolean,
       default: true,
+    },
+    status_info: {
+      type: Object,
+      default: {},
     },
   });
 

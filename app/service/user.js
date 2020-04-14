@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-03-16 18:53:20
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-04-02 15:16:14
+ * @LastEditTime: 2020-04-14 12:06:05
  */
 'use strict';
 
@@ -64,6 +64,30 @@ class UserService extends Service {
   async findById(_id) {
     const { ctx } = this;
     return ctx.model.User.findById(_id);
+  }
+
+  // 通过 uid 查询用户
+  async findByUid(uid) {
+    const { ctx } = this;
+    return ctx.model.User.findOne({ uid });
+  }
+
+  // 与 submission 操作相关 ---------------------------
+  // ⚠️ 这里的参数是 uid 而不是 _id
+  async createStatusInfo(uid, judge_result) {
+    const { service, ctx } = this;
+    const { solve, submit } = await service.user.findByUid(uid);
+    let new_submit = submit;
+    new_submit += 1;
+    let new_solve = solve;
+    if (judge_result === 0) {
+      new_solve += 1;
+    }
+    const res = await ctx.model.User.findOneAndUpdate({ uid },
+      { solve: new_solve, submit: new_submit },
+      { new: true }
+    );
+    return res;
   }
 }
 

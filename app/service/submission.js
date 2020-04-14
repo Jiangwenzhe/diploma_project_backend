@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-04-13 09:25:22
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-04-13 16:58:21
+ * @LastEditTime: 2020-04-14 12:03:47
  */
 'use strict';
 
@@ -28,7 +28,7 @@ class SubmissionService extends Service {
   async judge(payload) {
     // TODO: 通过 superagent 与后台交互，返回判题信息
     const { service } = this;
-    const { _id: submission_id, language, code, pid } = payload;
+    const { _id: submission_id, language, code, pid, uid } = payload;
     // 获取题目的数据信息
     const {
       limit_time: max_cpu_time,
@@ -64,6 +64,8 @@ class SubmissionService extends Service {
     if (err) {
       // 为题目添加 status_info
       await service.problem.createStatusInfo(problem_id, -2);
+      // 为用户添加 submit resolve
+      await service.user.createStatusInfo(uid, -2);
       const update_submission_response = await service.submission.update(submission_id, {
         result: -2,
         status_info: {
@@ -84,6 +86,8 @@ class SubmissionService extends Service {
     const result = result_arr.includes(-1) ? -1 : Math.max(...result_arr);
     // 为题目添加 status_info
     await service.problem.createStatusInfo(problem_id, result);
+    // 为用户添加 submit resolve
+    await service.user.createStatusInfo(uid, result);
     const update_res = await service.submission.update(submission_id, {
       result,
       info: {

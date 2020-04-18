@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-03-26 15:02:40
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-04-10 09:10:29
+ * @LastEditTime: 2020-04-16 16:31:09
  */
 'use strict';
 
@@ -56,6 +56,17 @@ class ProblemsController extends Controller {
       ctx.throw(400, 'id参数错误');
     }
     const res = await service.problem.findById(id);
+    ctx.helper.success({ ctx, res });
+  }
+
+  // 获取单个题目 pid
+  async findSinglePeoblemByPid() {
+    const { ctx, service } = this;
+    const { pid } = ctx.params;
+    if (isNaN(pid)) {
+      ctx.throw(400, 'pid 必须是数字');
+    }
+    const res = await service.problem.findByProblemId(pid);
     ctx.helper.success({ ctx, res });
   }
 

@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-04-13 09:25:22
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-04-14 12:03:47
+ * @LastEditTime: 2020-04-18 13:13:30
  */
 'use strict';
 
@@ -124,6 +124,14 @@ class SubmissionService extends Service {
     const { ctx } = this;
     return await ctx.model.Submission.findById(_id);
   }
+
+  // 通过 uid 查询 submission
+  async findByUid(uid) {
+    const { ctx } = this;
+    const user_submission = await ctx.model.Submission.find({ uid }).exec();
+    return user_submission;
+  }
+
 }
 
 module.exports = SubmissionService;

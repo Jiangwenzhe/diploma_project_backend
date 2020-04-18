@@ -2,11 +2,12 @@
  * @Author: Wenzhe
  * @Date: 2020-03-16 18:53:20
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-04-14 12:06:05
+ * @LastEditTime: 2020-04-18 14:20:48
  */
 'use strict';
 
 const Service = require('egg').Service;
+const { difference_set } = require('../utils/tool_func');
 
 class UserService extends Service {
   // 创建用户
@@ -83,11 +84,37 @@ class UserService extends Service {
     if (judge_result === 0) {
       new_solve += 1;
     }
-    const res = await ctx.model.User.findOneAndUpdate({ uid },
+    const res = await ctx.model.User.findOneAndUpdate(
+      { uid },
       { solve: new_solve, submit: new_submit },
       { new: true }
     );
     return res;
+  }
+
+  // 获取用户 solve, failed 的题目
+  // ⚠️ 这里的参数是 uid 而不是 _id
+  // 期望返回一个对象，包含一个数组 { solved_list: [pid, pid], failed_list: [pid, pid]}
+  async findUserSubmitProblemInfo(uid) {
+    const { service } = this;
+    const user_submission = await service.submission.findByUid(uid);
+    const solved_list = new Set();
+    const failed_list = new Set();
+    const submit_list = new Set();
+    for (let i = 0; i < user_submission.length; i++) {
+      submit_list.add(user_submission[i].pid);
+      if (user_submission[i].result === 0) {
+        solved_list.add(user_submission[i].pid);
+      } else {
+        failed_list.add(user_submission[i].pid);
+      }
+    }
+    return {
+      submit_list: [ ...submit_list ],
+      solved_list: [ ...solved_list ],
+      // different_set 会执行一个差集的操作
+      failed_list: [ ...difference_set(failed_list, solved_list) ],
+    };
   }
 }
 

@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-03-17 16:14:04
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-04-09 08:45:52
+ * @LastEditTime: 2020-04-18 14:21:15
  */
 'use strict';
 
@@ -32,10 +32,19 @@ class UserAccessService extends Service {
     // ctx.state.user 可以提取到JWT编码的data
     const _id = ctx.state.user.data._id;
     const user = await service.user.findById(_id);
+    const { uid } = user;
+    const { solved_list, failed_list, submit_list } = await service.user.findUserSubmitProblemInfo(uid);
     if (!user) {
       ctx.throw(404, 'user is not found');
     }
-    return user;
+    return {
+      user: {
+        ...user._doc,
+        submit_list,
+        solved_list,
+        failed_list,
+      },
+    };
   }
 }
 

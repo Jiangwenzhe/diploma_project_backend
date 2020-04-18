@@ -30,6 +30,7 @@ module.exports = app => {
   router.post('/api/problem', controller.problem.createProblem);
   router.get('/api/problem', controller.problem.index);
   router.get('/api/problem/:id', controller.problem.findSingleProblemById);
+  router.get('/api/problemid/:pid', controller.problem.findSinglePeoblemByPid);
   router.get('/api/problem/testcase/:id', controller.problem.getTestCaseOfAProblemById);
   router.put('/api/problem/:id', controller.problem.updateProblem);
   router.delete('/api/problem/:id', controller.problem.deleteProblem);

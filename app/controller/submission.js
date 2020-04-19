@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-04-13 09:27:52
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-04-13 10:10:49
+ * @LastEditTime: 2020-04-18 16:44:43
  */
 'use strict';
 
@@ -24,6 +24,17 @@ class SubmissionController extends Controller {
     const { uid, name } = await service.user.findById(_id);
     const payload = Object.assign(req, { uid, username: name });
     const res = await service.submission.create(payload);
+    ctx.helper.success({ ctx, res });
+  }
+
+  // 获取所有 submission (分页 / )
+  async index() {
+    const { ctx, service } = this;
+    // 组装参数
+    const payload = ctx.query;
+    // 调用 Service 进行业务处理
+    const res = await service.submission.index(payload);
+    // 设置响应内容和响应状态码
     ctx.helper.success({ ctx, res });
   }
 }

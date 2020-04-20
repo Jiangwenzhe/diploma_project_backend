@@ -2,12 +2,21 @@
  * @Author: Wenzhe
  * @Date: 2020-04-13 10:27:12
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-04-13 12:07:17
+ * @LastEditTime: 2020-04-20 12:21:55
  */
 'use strict';
 
-const default_env = [ 'LANG=en_US.UTF-8', 'LANGUAGE=en_US:en', 'LC_ALL=en_US.UTF-8' ];
-
+const default_env = [
+  'LANG=en_US.UTF-8',
+  'LANGUAGE=en_US:en',
+  'LC_ALL=en_US.UTF-8',
+];
+const py3_default_env = [
+  'PYTHONIOENCODING=UTF-8',
+  'LANG=en_US.UTF-8',
+  'LANGUAGE=en_US:en',
+  'LC_ALL=en_US.UTF-8',
+];
 
 const c_lang_config = {
   compile: {
@@ -16,7 +25,8 @@ const c_lang_config = {
     max_cpu_time: 3000,
     max_real_time: 5000,
     max_memory: 128 * 1024 * 1024,
-    compile_command: '/usr/bin/gcc -DONLINE_JUDGE -O2 -w -fmax-errors=3 -std=c99 {src_path} -lm -o {exe_path}',
+    compile_command:
+      '/usr/bin/gcc -DONLINE_JUDGE -O2 -w -fmax-errors=3 -std=c99 {src_path} -lm -o {exe_path}',
   },
   run: {
     command: '{exe_path}',
@@ -47,7 +57,8 @@ const cpp_lang_config = {
     max_cpu_time: 3000,
     max_real_time: 5000,
     max_memory: 128 * 1024 * 1024,
-    compile_command: '/usr/bin/g++ -DONLINE_JUDGE -O2 -w -fmax-errors=3 -std=c++11 {src_path} -lm -o {exe_path}',
+    compile_command:
+      '/usr/bin/g++ -DONLINE_JUDGE -O2 -w -fmax-errors=3 -std=c++11 {src_path} -lm -o {exe_path}',
   },
   run: {
     command: '{exe_path}',
@@ -67,13 +78,13 @@ const java_lang_config = {
     compile_command: '/usr/bin/javac {src_path} -d {exe_dir} -encoding UTF8',
   },
   run: {
-    command: '/usr/bin/java -cp {exe_dir} -XX:MaxRAM={max_memory}k -Djava.security.manager -Dfile.encoding=UTF-8 -Djava.security.policy==/etc/java_policy -Djava.awt.headless=true Main',
+    command:
+      '/usr/bin/java -cp {exe_dir} -XX:MaxRAM={max_memory}k -Djava.security.manager -Dfile.encoding=UTF-8 -Djava.security.policy==/etc/java_policy -Djava.awt.headless=true Main',
     seccomp_rule: null,
     env: default_env,
     memory_limit_check_only: 1,
   },
 };
-
 
 const py2_lang_config = {
   compile: {
@@ -103,7 +114,7 @@ const py3_lang_config = {
   run: {
     command: '/usr/bin/python3 {exe_path}',
     seccomp_rule: 'general',
-    env: [ 'PYTHONIOENCODING=UTF-8' ] + default_env,
+    env: py3_default_env,
   },
 };
 

@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-04-13 09:25:22
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-04-18 16:32:12
+ * @LastEditTime: 2020-04-22 10:37:13
  */
 'use strict';
 
@@ -140,7 +140,7 @@ class SubmissionService extends Service {
     res = await this.ctx.model.Submission.find(query)
       .skip(skip)
       .limit(Number(pageSize))
-      .sort({ create: -1 })
+      .sort({ create_at: -1 })
       .exec();
     return { total, list: res, pageSize, current };
   }

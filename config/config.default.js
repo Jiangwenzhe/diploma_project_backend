@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-03-16 16:28:48
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-04-07 11:49:36
+ * @LastEditTime: 2020-04-23 11:24:57
  */
 /* eslint valid-jsdoc: "off" */
 
@@ -56,6 +56,30 @@ module.exports = appInfo => {
 
   // 用户自定义静态文件
   config.TestCaseUploadServer = 'http://127.0.0.1:8100/testcase/';
+
+  // egg-bus
+  config.bus = {
+    debug: true, // Debug 模式下会打印更多日志信息
+    concurrency: 1, // Bull 中队列处理的并发数：https://github.com/OptimalBits/bull/blob/develop/REFERENCE.md#queueprocess
+    listener: {
+    },
+    job: {
+      // 与 listener 一致，唯一不同的就是 默认 baseDir 的值为 `job`
+    },
+    bull: { // Bull 队列配置：https://github.com/OptimalBits/bull/blob/develop/REFERENCE.md#queue
+      redis: {
+        host: 'localhost',
+        port: 6379,
+        db: 0,
+      },
+    },
+    queue: {
+      default: 'default', // 默认队列名称
+      prefix: 'bus', // 队列前缀
+    },
+    queues: { // 针对不同队列单独配置
+    },
+  };
 
   return {
     ...config,

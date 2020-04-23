@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-04-13 09:27:52
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-04-18 16:44:43
+ * @LastEditTime: 2020-04-23 12:10:02
  */
 'use strict';
 
@@ -35,6 +35,17 @@ class SubmissionController extends Controller {
     // 调用 Service 进行业务处理
     const res = await service.submission.index(payload);
     // 设置响应内容和响应状态码
+    ctx.helper.success({ ctx, res });
+  }
+
+  // 获取单个 submission
+  async findSingleSubmissionById() {
+    const { ctx, service } = this;
+    const { id } = ctx.params;
+    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+      ctx.throw(400, 'id参数错误');
+    }
+    const res = await service.submission.findById(id);
     ctx.helper.success({ ctx, res });
   }
 }

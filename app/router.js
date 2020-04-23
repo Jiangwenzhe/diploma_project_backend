@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-03-16 16:28:48
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-04-19 15:06:05
+ * @LastEditTime: 2020-04-23 12:19:43
  */
 'use strict';
 
@@ -54,4 +54,5 @@ module.exports = app => {
   // Submission 操作相关路由 ============================
   router.post('/api/submission', jwt, controller.submission.createSubmission);
   router.get('/api/submission', controller.submission.index);
+  router.get('/api/submission/:id', controller.submission.findSingleSubmissionById);
 };

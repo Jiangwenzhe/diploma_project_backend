@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-04-13 09:25:22
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-04-22 10:37:13
+ * @LastEditTime: 2020-04-23 12:18:22
  */
 'use strict';
 
@@ -12,21 +12,23 @@ const { getLangueConfig } = require('../../config/languages');
 
 class SubmissionService extends Service {
   async create(payload) {
-    const { ctx, service } = this;
+    const { ctx, app } = this;
     try {
       const submission = await ctx.model.Submission.create(payload);
       // 如果以后采用了消息队列的写法，就直接返回 submission_id
       // return { submission_id: submission._id };
       // 提交题目判题
-      const judge_result = await service.submission.judge(submission);
-      return judge_result;
+      // const judge_result = await service.submission.judge(submission);
+      app.bus.dispatch('handleSubmission', submission);
+      // return judge_result;
+      return submission;
     } catch (e) {
       ctx.throw(400, e);
     }
   }
 
   async judge(payload) {
-    // TODO: 通过 superagent 与后台交互，返回判题信息
+    // 通过 superagent 与后台交互，返回判题信息
     const { service } = this;
     const { _id: submission_id, language, code, pid, uid } = payload;
     // 获取题目的数据信息

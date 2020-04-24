@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-04-13 09:25:22
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-04-23 12:18:22
+ * @LastEditTime: 2020-04-24 10:14:10
  */
 'use strict';
 
@@ -97,9 +97,10 @@ class SubmissionService extends Service {
         judge_result_info,
       },
       status_info: {
-        cpu_time_cost: Math.round(cpu_time_cost_sum / judge_result_info.length),
-        real_time__cost: Math.round(real_time__cost_sum / judge_result_info.length),
-        memory_cost: Math.round(memory_cost_sum / judge_result_info.length),
+        //  / judge_result_info.length 所有的累加
+        cpu_time_cost: Math.round(cpu_time_cost_sum),
+        real_time__cost: Math.round(real_time__cost_sum),
+        memory_cost: Math.round(memory_cost_sum),
       },
     });
     return update_res;

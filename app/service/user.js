@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-03-16 18:53:20
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-04-18 14:20:48
+ * @LastEditTime: 2020-04-24 16:49:14
  */
 'use strict';
 
@@ -75,18 +75,43 @@ class UserService extends Service {
 
   // 与 submission 操作相关 ---------------------------
   // ⚠️ 这里的参数是 uid 而不是 _id
-  async createStatusInfo(uid, judge_result) {
+  async createStatusInfo(uid, judge_result, pid) {
     const { service, ctx } = this;
-    const { solve, submit } = await service.user.findByUid(uid);
+    const {
+      solve,
+      submit,
+      submit_list,
+      solved_list,
+      failed_list,
+    } = await service.user.findByUid(uid);
+
+    console.log('pid', pid);
+
+    const new_submit_list = new Set(submit_list);
+    const new_solved_list = new Set(solved_list);
+    const new_failed_list = new Set(failed_list);
+
     let new_submit = submit;
     new_submit += 1;
+    new_submit_list.add(pid);
     let new_solve = solve;
     if (judge_result === 0) {
       new_solve += 1;
+      new_solved_list.add(pid);
+    } else {
+      new_failed_list.add(pid);
     }
+
     const res = await ctx.model.User.findOneAndUpdate(
       { uid },
-      { solve: new_solve, submit: new_submit },
+      {
+        solve: new_solve,
+        submit: new_submit,
+        submit_list: [ ...new_submit_list ],
+        solved_list: [ ...new_solved_list ],
+        // different_set 会执行一个差集的操作
+        failed_list: [ ...difference_set(new_failed_list, new_solved_list) ],
+      },
       { new: true }
     );
     return res;

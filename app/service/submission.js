@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-04-13 09:25:22
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-04-24 10:14:10
+ * @LastEditTime: 2020-04-24 16:46:12
  */
 'use strict';
 
@@ -67,7 +67,7 @@ class SubmissionService extends Service {
       // 为题目添加 status_info
       await service.problem.createStatusInfo(problem_id, -2);
       // 为用户添加 submit resolve
-      await service.user.createStatusInfo(uid, -2);
+      await service.user.createStatusInfo(uid, -2, pid);
       const update_submission_response = await service.submission.update(submission_id, {
         result: -2,
         status_info: {
@@ -89,7 +89,7 @@ class SubmissionService extends Service {
     // 为题目添加 status_info
     await service.problem.createStatusInfo(problem_id, result);
     // 为用户添加 submit resolve
-    await service.user.createStatusInfo(uid, result);
+    await service.user.createStatusInfo(uid, result, pid);
     const update_res = await service.submission.update(submission_id, {
       result,
       info: {
@@ -140,7 +140,7 @@ class SubmissionService extends Service {
     }
     // 获取所有题目的数量
     total = await ctx.model.Submission.count(query).exec();
-    res = await this.ctx.model.Submission.find(query)
+    res = await ctx.model.Submission.find(query)
       .skip(skip)
       .limit(Number(pageSize))
       .sort({ create_at: -1 })

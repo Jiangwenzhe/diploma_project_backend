@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-03-16 16:54:00
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-04-02 15:19:27
+ * @LastEditTime: 2020-04-24 16:44:02
  */
 'use strict';
 
@@ -29,7 +29,8 @@ module.exports = app => {
     },
     avatar: {
       type: String,
-      default: 'https://tva1.sinaimg.cn/large/00831rSTly1gdff24d3cyj305k05kaa5.jpg',
+      default:
+        'https://tva1.sinaimg.cn/large/00831rSTly1gdff24d3cyj305k05kaa5.jpg',
     },
     createdAt: {
       type: Date,
@@ -63,6 +64,18 @@ module.exports = app => {
     company: {
       type: String,
       default: '',
+    },
+    submit_list: {
+      type: Array,
+      default: [],
+    },
+    failed_list: {
+      type: Array,
+      default: [],
+    },
+    solved_list: {
+      type: Array,
+      default: [],
     },
   });
   return mongoose.model('User', UserSchema);

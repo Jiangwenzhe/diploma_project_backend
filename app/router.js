@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-03-16 16:28:48
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-04-23 12:19:43
+ * @LastEditTime: 2020-04-24 16:12:47
  */
 'use strict';
 
@@ -55,4 +55,7 @@ module.exports = app => {
   router.post('/api/submission', jwt, controller.submission.createSubmission);
   router.get('/api/submission', controller.submission.index);
   router.get('/api/submission/:id', controller.submission.findSingleSubmissionById);
+
+  // rankList 操作相关路由 ============================
+  router.get('/api/ranklist', controller.ranklist.index);
 };

@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-03-16 19:11:42
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-03-17 13:59:49
+ * @LastEditTime: 2020-04-24 17:01:39
  */
 'use strict';
 
@@ -41,7 +41,7 @@ class UserController extends Controller {
   // 修改用户
   async updateUser() {
     const { ctx, service } = this;
-    ctx.validate(UserRule, ctx.request.body);
+    // ctx.validate(UserRule, ctx.request.body);
     const { id } = ctx.params;
     if (!id.match(/^[0-9a-fA-F]{24}$/)) {
       ctx.throw(400, 'id参数错误');

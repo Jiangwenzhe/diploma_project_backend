@@ -119,7 +119,7 @@ class DiscussService extends Service {
     }
     // console.log('--------------query', query);
     // 索取所有题目的数量
-    total = await ctx.model.Discuss.count(query).exec();
+    total = await ctx.model.Discuss.countDocuments(query).exec();
     res = await this.ctx.model.Discuss.find(query, { title: 1, tags: 1, category: 1, author: 1 }).skip(skip).limit(Number(pageSize))
       .sort({ createdAt: -1 })
       .exec();

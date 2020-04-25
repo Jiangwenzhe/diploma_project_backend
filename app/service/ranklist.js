@@ -18,7 +18,7 @@ class RanklistService extends Service {
     // 计算skip
     const skip = (Number(current) - 1) * Number(pageSize || 10);
 
-    total = await ctx.model.User.count(query).exec();
+    total = await ctx.model.User.countDocuments(query).exec();
     res = await ctx.model.User.aggregate([
       {
         $project: {

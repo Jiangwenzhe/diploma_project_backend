@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-03-26 14:55:02
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-04-13 17:26:49
+ * @LastEditTime: 2020-04-25 12:38:57
  */
 
 'use strict';
@@ -85,7 +85,7 @@ class ProblemsService extends Service {
       };
     }
     // 索取所有题目的数量
-    total = await ctx.model.Problem.count(query).exec();
+    total = await ctx.model.Problem.countDocuments(query).exec();
     res = await this.ctx.model.Problem.find(query)
       .skip(skip)
       .limit(Number(pageSize))

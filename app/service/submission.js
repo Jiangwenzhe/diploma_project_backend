@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-04-13 09:25:22
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-04-24 16:46:12
+ * @LastEditTime: 2020-04-25 12:38:24
  */
 'use strict';
 
@@ -139,7 +139,7 @@ class SubmissionService extends Service {
       query.pid = pid;
     }
     // 获取所有题目的数量
-    total = await ctx.model.Submission.count(query).exec();
+    total = await ctx.model.Submission.countDocuments(query).exec();
     res = await ctx.model.Submission.find(query)
       .skip(skip)
       .limit(Number(pageSize))

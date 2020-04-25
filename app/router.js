@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-03-16 16:28:48
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-04-24 16:12:47
+ * @LastEditTime: 2020-04-25 16:35:11
  */
 'use strict';
 
@@ -24,6 +24,7 @@ module.exports = app => {
   router.post('/api/user', controller.user.createUser);
   router.delete('/api/user/:id', controller.user.destroyUser);
   router.get('/api/user/:id', controller.user.findSingleUserById);
+  router.get('/api/userinfo/:uid', controller.user.findSingleUserByUid);
   router.put('/api/user/:id', controller.user.updateUser);
 
   // 题目 problem 操作相关路由 =============================

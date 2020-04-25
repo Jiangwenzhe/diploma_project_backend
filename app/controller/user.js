@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-03-16 19:11:42
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-04-24 17:01:39
+ * @LastEditTime: 2020-04-25 16:56:44
  */
 'use strict';
 
@@ -58,6 +58,15 @@ class UserController extends Controller {
       ctx.throw(400, 'id参数错误');
     }
     const res = await service.user.findById(id);
+    const msg = res === null ? '没有该用户' : null;
+    ctx.helper.success({ ctx, res, msg });
+  }
+
+  // 根据uid查询单个用户
+  async findSingleUserByUid() {
+    const { ctx, service } = this;
+    const { uid } = ctx.params;
+    const res = await service.user.findByUid(uid);
     const msg = res === null ? '没有该用户' : null;
     ctx.helper.success({ ctx, res, msg });
   }

@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-04-02 15:58:23
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-04-03 19:03:00
+ * @LastEditTime: 2020-04-27 13:04:59
  */
 'use strict';
 
@@ -120,10 +120,28 @@ class DiscussService extends Service {
     // console.log('--------------query', query);
     // 索取所有题目的数量
     total = await ctx.model.Discuss.countDocuments(query).exec();
-    res = await this.ctx.model.Discuss.find(query, { title: 1, tags: 1, category: 1, author: 1 }).skip(skip).limit(Number(pageSize))
+    res = await this.ctx.model.Discuss.find(query, { author: 0 }).skip(skip).limit(Number(pageSize))
       .sort({ createdAt: -1 })
       .exec();
-    return { total, list: res, pageSize, current };
+    // for (let i = 0; i < res.length; i++) {
+    //   const authorInfo = await ctx.model.User.findById(res[i].author_id);
+    //   res[i].authorInfo = authorInfo;
+    // }
+    const res_add_author = res.map(async item => {
+      const authorInfo = await ctx.model.User.findById(item.author_id);
+      return {
+        title: item.title,
+        category: item.category,
+        tags: item.tags,
+        comments: item.comments,
+        detail: item.detail,
+        _id: item._id,
+        authorInfo,
+      };
+    });
+    // console.log(res);
+    const new_res = await Promise.all(res_add_author);
+    return { total, list: new_res, pageSize, current };
   }
 
   // ======================================= others =======================================

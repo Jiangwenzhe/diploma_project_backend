@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-04-02 15:58:23
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-04-27 13:04:59
+ * @LastEditTime: 2020-04-28 22:57:49
  */
 'use strict';
 
@@ -168,6 +168,20 @@ class DiscussService extends Service {
 
   // TODO: 低优先级 为单个文章倒赞  dislike + 1,
   // async dislike(_id) {}
+
+  async addAccessCount(_id) {
+    const { ctx } = this;
+    const discuss = await ctx.service.discuss.findById(_id);
+    if (!discuss) {
+      ctx.throw(404, 'discuss not found');
+    }
+    try {
+      const res = await ctx.model.Discuss.findByIdAndUpdate({ _id }, { $inc: { access_number: 1 } }, { new: true });
+      return res.access_number;
+    } catch (e) {
+      ctx.throw(400, e);
+    }
+  }
 
   // ==================================== comment ====================================
   // 添加一条评论，如果有时间，为评论加入点赞

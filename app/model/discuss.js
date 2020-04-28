@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-04-02 10:09:50
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-04-28 22:16:08
+ * @LastEditTime: 2020-04-28 22:56:30
  */
 
 'use strict';
@@ -84,7 +84,7 @@ module.exports = app => {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
     },
-    access_umber: {
+    access_number: {
       type: Number,
       default: 0,
     },

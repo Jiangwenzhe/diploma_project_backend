@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-04-02 16:00:24
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-04-03 17:49:06
+ * @LastEditTime: 2020-04-28 22:58:22
  */
 'use strict';
 
@@ -48,6 +48,7 @@ class DiscussController extends Controller {
     if (!id.match(/^[0-9a-fA-F]{24}$/)) {
       ctx.throw(400, 'id参数错误');
     }
+    await service.discuss.addAccessCount(id);
     const res = await service.discuss.findById(id);
     ctx.helper.success({ ctx, res });
   }

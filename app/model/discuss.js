@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-04-02 10:09:50
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-04-03 10:44:30
+ * @LastEditTime: 2020-04-28 22:16:08
  */
 
 'use strict';
@@ -18,7 +18,6 @@ module.exports = app => {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
     },
-    avatar_utl: String,
     content: {
       type: String,
       default: '',
@@ -85,7 +84,13 @@ module.exports = app => {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
     },
-    author: authorInfo,
+    access_umber: {
+      type: Number,
+      default: 0,
+    },
+    update_time: {
+      type: Date,
+    },
   });
   return mongoose.model('Discuss', DiscussSchema);
 };

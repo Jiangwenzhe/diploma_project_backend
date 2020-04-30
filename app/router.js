@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-03-16 16:28:48
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-04-25 16:35:11
+ * @LastEditTime: 2020-04-30 09:46:16
  */
 'use strict';
 
@@ -49,8 +49,12 @@ module.exports = app => {
   // router.get('/api/discuss/like/:id', jwt, controller.discuss.like);
 
   // Tag 操作相关的路由 ================================
+  // ProblemTag
   router.post('/api/problemtag', controller.problemTag.createTag);
   router.get('/api/problemtag', controller.problemTag.index);
+  // DiscussTag
+  router.post('/api/discusstag', controller.discussTag.createTag);
+  router.get('/api/discusstag', controller.discussTag.index);
 
   // Submission 操作相关路由 ============================
   router.post('/api/submission', jwt, controller.submission.createSubmission);

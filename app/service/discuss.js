@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-04-02 15:58:23
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-04-30 14:31:30
+ * @LastEditTime: 2020-04-30 22:54:30
  */
 'use strict';
 
@@ -99,7 +99,11 @@ class DiscussService extends Service {
   // 通过id查询 discuss
   async findById(_id) {
     const { ctx } = this;
-    return ctx.model.Discuss.findById(_id);
+    const discussInfo = await ctx.model.Discuss.findById(_id);
+    const new_discussInfo = discussInfo.toObject();
+    const authorInfo = await ctx.model.User.findById(new_discussInfo.author_id);
+    new_discussInfo.authorInfo = authorInfo;
+    return new_discussInfo;
   }
 
   // 获取所有的文章，需要支持 antd 的分页
@@ -141,24 +145,12 @@ class DiscussService extends Service {
       .limit(Number(pageSize))
       .sort({ createdAt: -1 })
       .exec();
-    // for (let i = 0; i < res.length; i++) {
-    //   const authorInfo = await ctx.model.User.findById(res[i].author_id);
-    //   res[i].authorInfo = authorInfo;
-    // }
     const res_add_author = res.map(async item => {
-      const authorInfo = await ctx.model.User.findById(item.author_id);
-      return {
-        title: item.title,
-        category: item.category,
-        tags: item.tags,
-        comments: item.comments,
-        detail: item.detail,
-        type: item.type,
-        _id: item._id,
-        authorInfo,
-      };
+      const itemObject = item.toObject();
+      const authorInfo = await ctx.model.User.findById(itemObject.author_id);
+      itemObject.authorInfo = authorInfo;
+      return itemObject;
     });
-    // console.log(res);
     const new_res = await Promise.all(res_add_author);
     return { total, list: new_res, pageSize, current };
   }

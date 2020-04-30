@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-04-02 15:58:23
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-04-28 22:57:49
+ * @LastEditTime: 2020-04-30 14:31:30
  */
 'use strict';
 
@@ -15,6 +15,10 @@ class DiscussService extends Service {
     const { ctx, service } = this;
     const _id = ctx.state.user.data._id;
     const { name, avatar } = await service.user.findById(_id);
+    const { tags } = payload;
+    for (let i = 0; i < tags.length; i++) {
+      await service.discussTag.create({ name: tags[i] });
+    }
     const newPayload = {
       ...payload,
       author: {
@@ -45,14 +49,16 @@ class DiscussService extends Service {
     // console.log('------------author', author_id, ctx.state.user);
     // console.log('-------------author compare', author_id.toString() === ctx.state.user.data._id.toString());
     //
-    if (author_id.toString() === ctx.state.user.data._id.toString() || ctx.state.user.data.privilege === 3) {
+    if (
+      author_id.toString() === ctx.state.user.data._id.toString() ||
+      ctx.state.user.data.privilege === 3
+    ) {
       try {
         await ctx.model.Discuss.findByIdAndRemove(_id);
         return '删除成功';
       } catch (e) {
         throw new Error(400, e);
       }
-
     }
     throw new Error(400, '当前用户没有权限删除该文章');
   }
@@ -70,9 +76,14 @@ class DiscussService extends Service {
       ctx.throw(404, 'discuss not found');
     }
     const author_id = discuss.author_id;
-    if (author_id.toString() === ctx.state.user.data._id.toString() || ctx.state.user.data.privilege === 3) {
+    if (
+      author_id.toString() === ctx.state.user.data._id.toString() ||
+      ctx.state.user.data.privilege === 3
+    ) {
       try {
-        const res = await ctx.model.Discuss.findByIdAndUpdate(_id, payload, { new: true });
+        const res = await ctx.model.Discuss.findByIdAndUpdate(_id, payload, {
+          new: true,
+        });
         return {
           status: '修改成功',
           newValue: res,
@@ -96,31 +107,38 @@ class DiscussService extends Service {
   async index(payload) {
     // console.log('----------payload', payload);
     const { ctx } = this;
-    const { current, pageSize, category, title, tag } = payload;
+    const { current, pageSize, category, title, tag, type, author_id } = payload;
     const query = {};
     let res = [];
     let total = 0;
     // 计算 skip
-    const skip = ((Number(current)) - 1) * Number(pageSize || 10);
+    const skip = (Number(current) - 1) * Number(pageSize || 10);
     // 组装 query
     if (category) {
       query.category = category;
+    }
+    if (type) {
+      query.type = type;
     }
     if (title) {
       query.title = new RegExp(title, 'i');
     }
     // 如果包含需要转义的字符，前端需要 encode
     if (tag) {
-      // console.log('--------------', tag);
       const tags = tag.split(',');
       query.tags = {
         $all: tags,
       };
     }
+    if (author_id) {
+      query.author_id = author_id;
+    }
     // console.log('--------------query', query);
     // 索取所有题目的数量
     total = await ctx.model.Discuss.countDocuments(query).exec();
-    res = await this.ctx.model.Discuss.find(query, { author: 0 }).skip(skip).limit(Number(pageSize))
+    res = await this.ctx.model.Discuss.find(query)
+      .skip(skip)
+      .limit(Number(pageSize))
       .sort({ createdAt: -1 })
       .exec();
     // for (let i = 0; i < res.length; i++) {
@@ -135,6 +153,7 @@ class DiscussService extends Service {
         tags: item.tags,
         comments: item.comments,
         detail: item.detail,
+        type: item.type,
         _id: item._id,
         authorInfo,
       };
@@ -176,7 +195,11 @@ class DiscussService extends Service {
       ctx.throw(404, 'discuss not found');
     }
     try {
-      const res = await ctx.model.Discuss.findByIdAndUpdate({ _id }, { $inc: { access_number: 1 } }, { new: true });
+      const res = await ctx.model.Discuss.findByIdAndUpdate(
+        { _id },
+        { $inc: { access_number: 1 } },
+        { new: true }
+      );
       return res.access_number;
     } catch (e) {
       ctx.throw(400, e);
@@ -202,11 +225,14 @@ class DiscussService extends Service {
       //   discuss.comments.push(payload);
       //   discuss.save();
       // });
-      const result = await ctx.model.Discuss.update({ _id: duscuss_id }, {
-        $push: {
-          comments: newPayload,
-        },
-      });
+      const result = await ctx.model.Discuss.update(
+        { _id: duscuss_id },
+        {
+          $push: {
+            comments: newPayload,
+          },
+        }
+      );
       if (result.ok === 1) {
         return '评论添加成功';
       }

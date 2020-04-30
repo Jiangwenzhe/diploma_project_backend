@@ -11,7 +11,6 @@ const Service = require('egg').Service;
 
 class ProblemsService extends Service {
   // 新建题目
-  // TODO: 加入参数校验
   async create(payload) {
     const { ctx, service } = this;
     const { tags } = payload;

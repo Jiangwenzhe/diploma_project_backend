@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-03-16 16:28:48
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-04-30 09:46:16
+ * @LastEditTime: 2020-05-01 09:01:45
  */
 'use strict';
 
@@ -46,6 +46,7 @@ module.exports = app => {
   router.put('/api/discuss/:id', jwt, controller.discuss.updateDiscuss);
   router.delete('/api/discuss/:id', jwt, controller.discuss.destroyDiscuss);
   router.post('/api/discuss/comment/:id', jwt, controller.discuss.createComment);
+  router.post('/api/discuss/joindiscuss/:id', jwt, controller.discuss.joinDiscuss);
   // router.get('/api/discuss/like/:id', jwt, controller.discuss.like);
 
   // Tag 操作相关的路由 ================================

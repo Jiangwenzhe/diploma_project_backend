@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-04-02 15:58:23
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-04-30 22:54:30
+ * @LastEditTime: 2020-05-02 20:53:08
  */
 'use strict';
 
@@ -103,15 +103,63 @@ class DiscussService extends Service {
     const new_discussInfo = discussInfo.toObject();
     const authorInfo = await ctx.model.User.findById(new_discussInfo.author_id);
     new_discussInfo.authorInfo = authorInfo;
+    if (discussInfo.discussList.length > 0) {
+      const new_discussList = discussInfo.discussList.map(async item => {
+        const itemObject = item.toObject();
+        const authorInfo = await ctx.model.User.findById(
+          itemObject.discuss_user_id,
+          { _id: 1, name: 1, avatar: 1, uid: 1 }
+        );
+        itemObject.authorInfo = authorInfo;
+        return itemObject;
+      });
+      const new_res = await Promise.all(new_discussList);
+      new_discussInfo.discussList = new_res.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    }
+    if (discussInfo.comments.length > 0) {
+      const new_commentList = discussInfo.comments.map(async item => {
+        const itemObject = item.toObject();
+        const authorInfo = await ctx.model.User.findById(
+          itemObject.comment_user_id,
+          { _id: 1, name: 1, avatar: 1, uid: 1 }
+        );
+        itemObject.authorInfo = authorInfo;
+        if (itemObject.replys.length > 0) {
+          console.log(itemObject.replys);
+          const new_replyList = itemObject.replys.map(async item => {
+            console.log(item);
+            const itemObject = item;
+            const authorInfo = await ctx.model.User.findById(
+              itemObject.comment_user_id,
+              { _id: 1, name: 1, avatar: 1, uid: 1 }
+            );
+            itemObject.authorInfo = authorInfo;
+            return itemObject;
+          });
+          const new_res = await Promise.all(new_replyList);
+          itemObject.replys = new_res.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        }
+        return itemObject;
+      });
+      const new_comment_res = await Promise.all(new_commentList);
+      new_discussInfo.comments = new_comment_res.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    }
     return new_discussInfo;
   }
 
   // 获取所有的文章，需要支持 antd 的分页
   // 1. 按照 category, tag,关键词 title 进行搜索
   async index(payload) {
-    // console.log('----------payload', payload);
     const { ctx } = this;
-    const { current, pageSize, category, title, tag, type, author_id } = payload;
+    const {
+      current,
+      pageSize,
+      category,
+      title,
+      tag,
+      type,
+      author_id,
+    } = payload;
     const query = {};
     let res = [];
     let total = 0;
@@ -137,7 +185,6 @@ class DiscussService extends Service {
     if (author_id) {
       query.author_id = author_id;
     }
-    // console.log('--------------query', query);
     // 索取所有题目的数量
     total = await ctx.model.Discuss.countDocuments(query).exec();
     res = await this.ctx.model.Discuss.find(query)
@@ -201,15 +248,11 @@ class DiscussService extends Service {
   // ==================================== comment ====================================
   // 添加一条评论，如果有时间，为评论加入点赞
   async createComment(duscuss_id, payload) {
-    const { ctx, service } = this;
+    const { ctx } = this;
     const user_id = ctx.state.user.data._id;
-    const { name, avatar } = await service.user.findById(user_id);
-    console.log('------------new payload', payload);
     const newPayload = {
       ...payload,
-      user_id,
-      username: name,
-      avatar_utl: avatar,
+      comment_user_id: user_id,
     };
     console.log('------------', newPayload);
     try {
@@ -233,8 +276,84 @@ class DiscussService extends Service {
     }
   }
 
-  // TODO: 删除评论
-  // async deleteComment(duscuss_id, _id)
+  // 删除评论
+  async deleteComment(comment_id) {
+    const { ctx } = this;
+    try {
+      const result = await ctx.model.Discuss.update(
+        {},
+        { $pull: { comments: { _id: comment_id } } },
+        { multi: true }
+      );
+      return result;
+    } catch (e) {
+      ctx.throw(400, e);
+    }
+  }
+
+  async createReply(comment_id, payload) {
+    const { ctx } = this;
+    const user_id = ctx.state.user.data._id;
+    const newPayload = {
+      ...payload,
+      comment_user_id: user_id,
+    };
+    try {
+      const result = await ctx.model.Discuss.update(
+        { 'comments._id': comment_id },
+        {
+          $push: {
+            'comments.$.replys': newPayload,
+          },
+        }
+      );
+      if (result.ok === 1) {
+        return '评论添加成功';
+      }
+    } catch (e) {
+      ctx.throw(400, e);
+    }
+  }
+
+  // ==================================== discuss ====================================
+  async joinDiscuss(duscuss_id, payload) {
+    const { ctx } = this;
+    const user_id = ctx.state.user.data._id;
+    const newPayload = {
+      ...payload,
+      discuss_user_id: user_id,
+    };
+    try {
+      const result = await ctx.model.Discuss.update(
+        { _id: duscuss_id },
+        {
+          $push: {
+            discussList: newPayload,
+          },
+        }
+      );
+      if (result.ok === 1) {
+        return '添加讨论成功';
+      }
+    } catch (e) {
+      ctx.throw(400, e);
+    }
+  }
+
+  // 删除评论
+  async deleteDiscuss(discuss_id) {
+    const { ctx } = this;
+    try {
+      const result = await ctx.model.Discuss.update(
+        {},
+        { $pull: { comments: { _id: discuss_id } } },
+        { multi: true }
+      );
+      return result;
+    } catch (e) {
+      ctx.throw(400, e);
+    }
+  }
 }
 
 module.exports = DiscussService;

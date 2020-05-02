@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-04-02 16:00:24
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-04-28 22:58:22
+ * @LastEditTime: 2020-05-02 19:15:45
  */
 'use strict';
 
@@ -72,6 +72,37 @@ class DiscussController extends Controller {
     const { id } = ctx.params;
     const payload = ctx.request.body || {};
     const res = await service.discuss.createComment(id, payload);
+    ctx.helper.success({ ctx, res });
+  }
+
+  // 删除单条文章
+  async deleteComment() {
+    const { ctx, service } = this;
+    const { id } = ctx.params;
+    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+      ctx.throw(400, 'id参数错误');
+    }
+    const res = await service.discuss.deleteComment(id);
+    // 设置响应内容和响应状态码
+    ctx.helper.success({ ctx, res });
+  }
+
+  // 创建评论回复
+  async createReply() {
+    const { ctx, service } = this;
+    // 获取 comment id
+    const { id } = ctx.params;
+    const payload = ctx.request.body || {};
+    const res = await service.discuss.createReply(id, payload);
+    ctx.helper.success({ ctx, res });
+  }
+
+  // 参与讨论 joinDiscuss
+  async joinDiscuss() {
+    const { ctx, service } = this;
+    const { id } = ctx.params;
+    const payload = ctx.request.body || {};
+    const res = await service.discuss.joinDiscuss(id, payload);
     ctx.helper.success({ ctx, res });
   }
 

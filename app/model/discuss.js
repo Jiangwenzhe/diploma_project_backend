@@ -2,19 +2,19 @@
  * @Author: Wenzhe
  * @Date: 2020-04-02 10:09:50
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-04-29 09:33:36
+ * @LastEditTime: 2020-05-02 15:06:12
  */
 
 'use strict';
 
 module.exports = app => {
   const mongoose = app.mongoose;
-  const comment = new mongoose.Schema({
-    comment_user_id: {
+  const replys = new mongoose.Schema({
+    reply_user_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
     },
-    reply_user_id: {
+    comment_user_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
     },
@@ -25,6 +25,46 @@ module.exports = app => {
     createdAt: {
       type: Date,
       default: Date.now,
+    },
+  });
+  const comment = new mongoose.Schema({
+    comment_user_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+    },
+    content: {
+      type: String,
+      default: '',
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now,
+    },
+    replys: {
+      type: [ replys ],
+      default: [],
+    },
+  });
+  const newDiscuss = new mongoose.Schema({
+    discuss_user_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+    },
+    content: {
+      type: String,
+      default: '',
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now,
+    },
+    comments: {
+      type: [ comment ],
+      default: [],
+    },
+    like: {
+      type: Number,
+      default: 0,
     },
   });
   const DiscussSchema = new mongoose.Schema({
@@ -77,6 +117,10 @@ module.exports = app => {
     },
     update_time: {
       type: Date,
+    },
+    discussList: {
+      type: [ newDiscuss ],
+      default: [],
     },
   });
   return mongoose.model('Discuss', DiscussSchema);

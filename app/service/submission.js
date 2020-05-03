@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-04-13 09:25:22
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-04-25 12:38:24
+ * @LastEditTime: 2020-05-03 09:56:47
  */
 'use strict';
 
@@ -126,7 +126,7 @@ class SubmissionService extends Service {
   // 获取所有题目，需要支持 antd 分页
   async index(payload) {
     const { ctx } = this;
-    const { uid, pid, current, pageSize } = payload;
+    const { uid, pid, current, pageSize, status } = payload;
     const query = {};
     let res = [];
     let total = 0;
@@ -137,6 +137,12 @@ class SubmissionService extends Service {
     }
     if (pid) {
       query.pid = pid;
+    }
+    // query
+    if (status) {
+      query.status = status;
+    } else {
+      query.status = { $ne: 2 };
     }
     // 获取所有题目的数量
     total = await ctx.model.Submission.countDocuments(query).exec();

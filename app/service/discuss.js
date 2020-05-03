@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-04-02 15:58:23
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-05-02 20:53:08
+ * @LastEditTime: 2020-05-03 13:57:39
  */
 'use strict';
 
@@ -14,17 +14,12 @@ class DiscussService extends Service {
   async create(payload) {
     const { ctx, service } = this;
     const _id = ctx.state.user.data._id;
-    const { name, avatar } = await service.user.findById(_id);
     const { tags } = payload;
     for (let i = 0; i < tags.length; i++) {
       await service.discussTag.create({ name: tags[i] });
     }
     const newPayload = {
       ...payload,
-      author: {
-        name,
-        avatar_url: avatar,
-      },
       author_id: _id,
     };
     try {
@@ -39,16 +34,12 @@ class DiscussService extends Service {
   // 删除 单篇文章
   async destroy(_id) {
     const { ctx } = this;
-    const discuss = await ctx.service.discuss.findById(_id);
+    const discuss = await ctx.model.Discuss.findById(_id);
     if (!discuss) {
       ctx.throw(404, 'discuss not found');
     }
-    // console.log('--------discuss', discuss);
     // 对用户时候有权限删除这篇文章做校验
     const author_id = discuss.author_id;
-    // console.log('------------author', author_id, ctx.state.user);
-    // console.log('-------------author compare', author_id.toString() === ctx.state.user.data._id.toString());
-    //
     if (
       author_id.toString() === ctx.state.user.data._id.toString() ||
       ctx.state.user.data.privilege === 3
@@ -71,7 +62,7 @@ class DiscussService extends Service {
   // async update(id, payload) {}
   async update(_id, payload) {
     const { ctx } = this;
-    const discuss = await ctx.service.discuss.findById(_id);
+    const discuss = await ctx.model.Discuss.findById(_id);
     if (!discuss) {
       ctx.throw(404, 'discuss not found');
     }
@@ -229,7 +220,7 @@ class DiscussService extends Service {
 
   async addAccessCount(_id) {
     const { ctx } = this;
-    const discuss = await ctx.service.discuss.findById(_id);
+    const discuss = await ctx.model.Discuss.findById(_id);
     if (!discuss) {
       ctx.throw(404, 'discuss not found');
     }

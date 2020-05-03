@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-03-16 16:28:48
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-05-02 19:16:09
+ * @LastEditTime: 2020-05-03 14:02:38
  */
 'use strict';
 
@@ -66,4 +66,10 @@ module.exports = app => {
 
   // rankList 操作相关路由 ============================
   router.get('/api/ranklist', controller.ranklist.index);
+
+  // contest 操作相关路由
+  router.get('/api/contest', controller.contest.index);
+  router.post('/api/contest', jwt, controller.contest.createContest);
+  router.put('/api/contest/:id', jwt, controller.contest.updateContest);
+  router.delete('/api/contest/:id', jwt, controller.contest.deleteContest);
 };

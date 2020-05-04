@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-05-03 13:08:03
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-05-03 23:37:16
+ * @LastEditTime: 2020-05-04 21:54:09
  */
 'use strict';
 
@@ -57,6 +57,13 @@ class ContestController extends Controller {
     ctx.helper.success({ ctx, res });
   }
 
+  async getContestValueByid() {
+    const { ctx, service } = this;
+    const { id } = ctx.params;
+    const res = await service.contest.getContestById(id);
+    ctx.helper.success({ ctx, res });
+  }
+
   // 校验用户是否有权限访问比赛
   async verifyUser() {
     const { ctx, service } = this;
@@ -78,6 +85,37 @@ class ContestController extends Controller {
     }
     const res = await service.contest.destory(id);
     // 设置响应内容和响应状态码
+    ctx.helper.success({ ctx, res });
+  }
+
+  // 获取 contest 题目
+  async getContestProblem() {
+    const { ctx, service } = this;
+    const { cid } = ctx.params;
+    const res = await service.contest.getContestProblem(cid);
+    ctx.helper.success({ ctx, res });
+  }
+
+  // 为 contest 添加题目
+  async addContestProblem() {
+    const { ctx, service } = this;
+    const payload = ctx.request.body || {};
+    const { cid, pid } = payload;
+    if (!cid || !pid) {
+      ctx.throw(400, '参数错误');
+    }
+    const res = await service.contest.addContestProblem(cid, pid);
+    ctx.helper.success({ ctx, res });
+  }
+
+  // 为 contest 添加题目
+  async removeProblemFromContest() {
+    const { ctx, service } = this;
+    const { cid, pid } = ctx.query;
+    if (!cid || !pid) {
+      ctx.throw(400, '参数错误');
+    }
+    const res = await service.contest.removeContestProblem(cid, pid);
     ctx.helper.success({ ctx, res });
   }
 }

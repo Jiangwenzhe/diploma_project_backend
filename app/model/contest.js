@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-05-03 09:40:38
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-05-03 23:05:31
+ * @LastEditTime: 2020-05-04 19:03:27
  */
 'use strict';
 
@@ -60,18 +60,22 @@ module.exports = app => {
     password: {
       type: String,
     },
-    peoblemList: {
-      type: [ mongoose.Schema.Types.ObjectId ],
+    problemList: {
+      type: [],
       default: [],
     },
     submissionList: {
-      type: [ mongoose.Schema.Types.ObjectId ],
+      type: [],
       default: [],
     },
     rank: [],
     verifyList: {
       type: [],
       default: [],
+    },
+    visible: {
+      type: Boolean,
+      default: true,
     },
   });
   return mongoose.model('Contest', ContestSchema);

@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-05-03 12:54:16
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-05-03 23:39:11
+ * @LastEditTime: 2020-05-04 19:07:44
  */
 'use strict';
 
@@ -113,7 +113,7 @@ class ContestService extends Service {
     return 'verify error';
   }
 
-  // 按照 id 获取 content
+  // 按照 cid 获取 content
   async getContestDetailByCid(cid) {
     console.log('---', cid);
     const { ctx } = this;
@@ -121,12 +121,80 @@ class ContestService extends Service {
     const { uid } = await ctx.model.User.findById(_id);
     // TODO: 这里需要 对于 problemList 再做查询 ？ 或者把方法提取出来也可以
     const contentDetail = await ctx.model.Contest.findOne({ cid });
-    console.log(contentDetail);
     const verifyList = contentDetail.verifyList;
     if (verifyList.includes(uid)) {
       return contentDetail;
     }
     return 'verify error';
+  }
+
+  // 按照 id 获取 contest
+  async getContestById(id) {
+    const { ctx } = this;
+    const contest = await ctx.model.Contest.findById(id);
+    return contest;
+  }
+
+  // 获取 contest 页面
+  async getContestProblem(cid) {
+    const { ctx } = this;
+    const contest = await ctx.model.Contest.findOne({ cid });
+    console.log(contest);
+    const { problemList } = contest;
+    if (problemList.length === 0) {
+      return [];
+    }
+    const getproblemListDetail = problemList.map(async pid => {
+      const problem = await ctx.model.Problem.findOne({ pid });
+      return problem;
+    });
+    const problemListDetail = await Promise.all(getproblemListDetail);
+    return problemListDetail;
+  }
+
+  // 为 contest 添加题目
+  async addContestProblem(cid, pid) {
+    const { ctx } = this;
+    try {
+      const updated_res = await ctx.model.Contest.updateOne(
+        { cid },
+        {
+          $addToSet: {
+            problemList: pid,
+          },
+        },
+        { new: true }
+      );
+      console.log(updated_res);
+      return {
+        status: 'success',
+        newValue: updated_res,
+      };
+    } catch (e) {
+      ctx.throw(400, e);
+    }
+  }
+
+  // 为 contest 删除题目
+  async removeContestProblem(cid, pid) {
+    const { ctx } = this;
+    try {
+      const updated_res = await ctx.model.Contest.updateOne(
+        { cid },
+        {
+          $pull: {
+            problemList: pid,
+          },
+        },
+        { new: true }
+      );
+      return {
+        status: 'success',
+        newValue: updated_res,
+      };
+    } catch (e) {
+      ctx.throw(400, e);
+    }
   }
 }
 

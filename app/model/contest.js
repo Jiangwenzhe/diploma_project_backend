@@ -2,13 +2,20 @@
  * @Author: Wenzhe
  * @Date: 2020-05-03 09:40:38
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-05-03 13:25:25
+ * @LastEditTime: 2020-05-03 23:05:31
  */
 'use strict';
 
 module.exports = app => {
   const mongoose = app.mongoose;
   const ContestSchema = new mongoose.Schema({
+    cid: {
+      required: true,
+      type: Number,
+      index: {
+        unique: true,
+      },
+    },
     title: {
       type: String,
       required: true,
@@ -42,6 +49,14 @@ module.exports = app => {
       default: false,
       required: true,
     },
+    need_facialRecognition: {
+      type: Boolean,
+      default: false,
+      required: true,
+    },
+    facialRecognitionOptions: {
+      type: Object,
+    },
     password: {
       type: String,
     },
@@ -54,6 +69,10 @@ module.exports = app => {
       default: [],
     },
     rank: [],
+    verifyList: {
+      type: [],
+      default: [],
+    },
   });
   return mongoose.model('Contest', ContestSchema);
 };

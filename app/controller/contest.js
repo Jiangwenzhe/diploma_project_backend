@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-05-03 13:08:03
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-05-03 13:52:04
+ * @LastEditTime: 2020-05-03 23:37:16
  */
 'use strict';
 
@@ -49,11 +49,27 @@ class ContestController extends Controller {
     ctx.helper.success({ ctx, res });
   }
 
+  // 获取单篇文章
+  async findSingleContestByCid() {
+    const { ctx, service } = this;
+    const { cid } = ctx.params;
+    const res = await service.contest.getContestDetailByCid(cid);
+    ctx.helper.success({ ctx, res });
+  }
+
+  // 校验用户是否有权限访问比赛
+  async verifyUser() {
+    const { ctx, service } = this;
+    const payload = ctx.request.body || {};
+    const { password, cid } = payload;
+    const verifyResult = await service.contest.validatePass(cid, password);
+    ctx.helper.success({ ctx, res: verifyResult });
+  }
+
   // 删除 contest
   async deleteContest() {
     const { ctx, service } = this;
     if (ctx.state.user.data.privilege !== 3) {
-      console.log(ctx.state.user.data);
       ctx.throw(400, '您没有权限删除该比赛');
     }
     const { id } = ctx.params;

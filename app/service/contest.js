@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-05-03 12:54:16
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-05-03 13:56:59
+ * @LastEditTime: 2020-05-03 23:39:11
  */
 'use strict';
 
@@ -13,8 +13,10 @@ class ContestService extends Service {
   async create(payload) {
     const { ctx } = this;
     const user_id = ctx.state.user.data._id;
+    const { id } = await ctx.service.id.createId('Contest');
     const newPayload = {
       ...payload,
+      cid: id,
       created_by: user_id,
     };
     try {
@@ -79,7 +81,7 @@ class ContestService extends Service {
     res = await this.ctx.model.Contest.find(query)
       .skip(skip)
       .limit(Number(pageSize))
-      .sort({ createdAt: -1 })
+      .sort({ create_time: -1 })
       .exec();
     const res_add_author = res.map(async item => {
       const itemObject = item.toObject();
@@ -89,6 +91,42 @@ class ContestService extends Service {
     });
     const new_res = await Promise.all(res_add_author);
     return { total, list: new_res, pageSize, current };
+  }
+
+  async validatePass(cid, pass) {
+    const { ctx } = this;
+    const { password, need_pass } = await ctx.model.Contest.findOne({ cid });
+    if (!need_pass || pass === password) {
+      const { _id } = ctx.state.user.data;
+      const { uid } = await ctx.model.User.findById(_id);
+      // 将 uid 写入 contest 的 verifyList
+      await ctx.model.Contest.updateOne(
+        { cid },
+        {
+          $addToSet: {
+            verifyList: uid,
+          },
+        }
+      );
+      return 'success';
+    }
+    return 'verify error';
+  }
+
+  // 按照 id 获取 content
+  async getContestDetailByCid(cid) {
+    console.log('---', cid);
+    const { ctx } = this;
+    const { _id } = ctx.state.user.data;
+    const { uid } = await ctx.model.User.findById(_id);
+    // TODO: 这里需要 对于 problemList 再做查询 ？ 或者把方法提取出来也可以
+    const contentDetail = await ctx.model.Contest.findOne({ cid });
+    console.log(contentDetail);
+    const verifyList = contentDetail.verifyList;
+    if (verifyList.includes(uid)) {
+      return contentDetail;
+    }
+    return 'verify error';
   }
 }
 

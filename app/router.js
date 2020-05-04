@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-03-16 16:28:48
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-05-03 23:52:38
+ * @LastEditTime: 2020-05-04 19:06:38
  */
 'use strict';
 
@@ -73,6 +73,11 @@ module.exports = app => {
   router.put('/api/contest/:id', jwt, controller.contest.updateContest);
   router.delete('/api/contest/:id', jwt, controller.contest.deleteContest);
   router.get('/api/contest/:cid', jwt, controller.contest.findSingleContestByCid);
+  router.get('/api/contest_tool/:id', jwt, controller.contest.getContestValueByid);
   // 校验用户权限
   router.post('/api/contest/verify', jwt, controller.contest.verifyUser);
+  // contest 题目操作
+  router.get('/api/contest_problem/:cid', jwt, controller.contest.getContestProblem);
+  router.post('/api/contest_problem', jwt, controller.contest.addContestProblem);
+  router.delete('/api/contest_problem', jwt, controller.contest.removeProblemFromContest);
 };

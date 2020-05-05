@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-05-03 13:08:03
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-05-04 21:54:09
+ * @LastEditTime: 2020-05-05 13:31:56
  */
 'use strict';
 
@@ -49,7 +49,7 @@ class ContestController extends Controller {
     ctx.helper.success({ ctx, res });
   }
 
-  // 获取单篇文章
+  // 获取单条 contest
   async findSingleContestByCid() {
     const { ctx, service } = this;
     const { cid } = ctx.params;
@@ -108,7 +108,7 @@ class ContestController extends Controller {
     ctx.helper.success({ ctx, res });
   }
 
-  // 为 contest 添加题目
+  // 为 contest 删除题目
   async removeProblemFromContest() {
     const { ctx, service } = this;
     const { cid, pid } = ctx.query;
@@ -116,6 +116,14 @@ class ContestController extends Controller {
       ctx.throw(400, '参数错误');
     }
     const res = await service.contest.removeContestProblem(cid, pid);
+    ctx.helper.success({ ctx, res });
+  }
+
+  // 为 contest 修改题目
+  async updateProblemFromContest() {
+    const { ctx, service } = this;
+    const payload = ctx.request.body || {};
+    const res = await service.contest.updateContestProblem(payload);
     ctx.helper.success({ ctx, res });
   }
 }

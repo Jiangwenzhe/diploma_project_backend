@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-05-03 12:54:16
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-05-04 19:07:44
+ * @LastEditTime: 2020-05-05 16:06:28
  */
 'use strict';
 
@@ -139,7 +139,6 @@ class ContestService extends Service {
   async getContestProblem(cid) {
     const { ctx } = this;
     const contest = await ctx.model.Contest.findOne({ cid });
-    console.log(contest);
     const { problemList } = contest;
     if (problemList.length === 0) {
       return [];
@@ -160,12 +159,32 @@ class ContestService extends Service {
         { cid },
         {
           $addToSet: {
-            problemList: pid,
+            problemList: Number(pid),
           },
         },
         { new: true }
       );
-      console.log(updated_res);
+      return {
+        status: 'success',
+        newValue: updated_res,
+      };
+    } catch (e) {
+      ctx.throw(400, e);
+    }
+  }
+
+  // 为 contest 修改题目
+  async updateContestProblem(payload) {
+    const { ctx } = this;
+    const { cid, pidList } = payload;
+    try {
+      const updated_res = await ctx.model.Contest.updateOne(
+        { cid },
+        {
+          problemList: pidList,
+        },
+        { new: true }
+      );
       return {
         status: 'success',
         newValue: updated_res,
@@ -179,15 +198,15 @@ class ContestService extends Service {
   async removeContestProblem(cid, pid) {
     const { ctx } = this;
     try {
-      const updated_res = await ctx.model.Contest.updateOne(
+      const updated_res = await ctx.model.Contest.findOneAndUpdate(
         { cid },
         {
           $pull: {
-            problemList: pid,
+            problemList: Number(pid),
           },
         },
-        { new: true }
-      );
+        { new: true, safe: true, upsert: true }
+      ).exec();
       return {
         status: 'success',
         newValue: updated_res,

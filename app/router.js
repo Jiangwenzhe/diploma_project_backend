@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-03-16 16:28:48
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-05-04 19:06:38
+ * @LastEditTime: 2020-05-05 10:15:29
  */
 'use strict';
 
@@ -80,4 +80,5 @@ module.exports = app => {
   router.get('/api/contest_problem/:cid', jwt, controller.contest.getContestProblem);
   router.post('/api/contest_problem', jwt, controller.contest.addContestProblem);
   router.delete('/api/contest_problem', jwt, controller.contest.removeProblemFromContest);
+  router.put('/api/contest_problem', jwt, controller.contest.updateProblemFromContest);
 };

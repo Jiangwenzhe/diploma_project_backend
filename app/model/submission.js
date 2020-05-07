@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-04-13 08:33:47
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-05-03 09:53:10
+ * @LastEditTime: 2020-05-06 14:38:45
  */
 'use strict';
 
@@ -39,6 +39,8 @@ module.exports = app => {
       type: Number,
       default: 1,
     },
+    //
+    cid: Number,
   });
   return mongoose.model('Submission', SubmissionSchema);
 };

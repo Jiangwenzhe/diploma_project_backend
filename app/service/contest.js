@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-05-03 12:54:16
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-05-05 16:06:28
+ * @LastEditTime: 2020-05-07 16:11:00
  */
 'use strict';
 
@@ -115,12 +115,17 @@ class ContestService extends Service {
 
   // 按照 cid 获取 content
   async getContestDetailByCid(cid) {
-    console.log('---', cid);
-    const { ctx } = this;
+    const { ctx, service } = this;
     const { _id } = ctx.state.user.data;
     const { uid } = await ctx.model.User.findById(_id);
-    // TODO: 这里需要 对于 problemList 再做查询 ？ 或者把方法提取出来也可以
     const contentDetail = await ctx.model.Contest.findOne({ cid });
+    // 获取 problemList
+    const problemList = contentDetail.problemList.map(async pid => {
+      const problem = await service.problem.findByProblemId(pid);
+      return problem;
+    });
+    const problemListInfo = await Promise.all(problemList);
+    contentDetail.problemList = problemListInfo;
     const verifyList = contentDetail.verifyList;
     if (verifyList.includes(uid)) {
       return contentDetail;
@@ -214,6 +219,59 @@ class ContestService extends Service {
     } catch (e) {
       ctx.throw(400, e);
     }
+  }
+
+  // ================== contest problem 操作 ===================
+  async getProblemInfoByCidAndPid(cid, pid) {
+    const { ctx, service } = this;
+    const contest = await ctx.model.Contest.findOne({ cid });
+    const { problemList } = contest;
+    if (!problemList.includes(pid)) {
+      ctx.throw(400, '当前比赛没有包含该题目');
+    }
+    const problemDetail = await service.problem.findByProblemId(pid);
+    return problemDetail;
+  }
+
+  // ================== contest rank 操作 ===================
+  async getContestRankList(cid) {
+    const { ctx, service } = this;
+    const contestInfo = await ctx.model.Contest.findOne({ cid });
+    const { start_time, end_time, verifyList, problemList } = contestInfo;
+    console.log('-------------');
+    console.log(verifyList);
+    // verifyList
+    // 现在是正序传递
+    const submissionList = await ctx.model.Submission.find(
+      { cid },
+      { pid: 1, uid: 1, create_at: 1, result: 1 }
+    )
+      .lean()
+      .exec();
+    const userSubmissionList = verifyList.map(uid => {
+      const singleUserSubmission = submissionList.filter(
+        submission => submission.uid === uid
+      );
+      const problemSubmission = problemList.map(pid => {
+        const singleProblemSolution = singleUserSubmission.filter(submission => submission.pid === pid);
+        let ac_time = null;
+        let waCount = 0;
+        for (let i = 0; i < singleProblemSolution.length; i++) {
+          const submission = singleProblemSolution[i];
+          // 当答案为 wrong answer 时 waCount++
+          if (submission.result === -1) {
+            waCount++;
+          }
+          if (submission.result === 0) {
+            ac_time = submission.create_at;
+            break;
+          }
+        }
+        return { [pid]: { waCount, ac_time } };
+      });
+      return { [uid]: problemSubmission };
+    });
+    return userSubmissionList;
   }
 }
 

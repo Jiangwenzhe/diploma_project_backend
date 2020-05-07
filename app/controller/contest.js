@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-05-03 13:08:03
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-05-05 13:31:56
+ * @LastEditTime: 2020-05-07 14:05:06
  */
 'use strict';
 
@@ -124,6 +124,22 @@ class ContestController extends Controller {
     const { ctx, service } = this;
     const payload = ctx.request.body || {};
     const res = await service.contest.updateContestProblem(payload);
+    ctx.helper.success({ ctx, res });
+  }
+
+  // ==================== contest 前端题目操作 ========================
+  async getProblemInfoByCidAndPid() {
+    const { ctx, service } = this;
+    const { cid, pid } = ctx.query;
+    const res = await service.contest.getProblemInfoByCidAndPid(cid, pid);
+    ctx.helper.success({ ctx, res });
+  }
+
+  // 获取 contest rank
+  async getContestRankList() {
+    const { ctx, service } = this;
+    const { cid } = ctx.params;
+    const res = await service.contest.getContestRankList(cid);
     ctx.helper.success({ ctx, res });
   }
 }

@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-03-16 16:28:48
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-05-05 10:15:29
+ * @LastEditTime: 2020-05-07 14:18:13
  */
 'use strict';
 
@@ -81,4 +81,8 @@ module.exports = app => {
   router.post('/api/contest_problem', jwt, controller.contest.addContestProblem);
   router.delete('/api/contest_problem', jwt, controller.contest.removeProblemFromContest);
   router.put('/api/contest_problem', jwt, controller.contest.updateProblemFromContest);
+  // contest 获取题目
+  router.get('/api/contest_problemDetail', jwt, controller.contest.getProblemInfoByCidAndPid);
+  // contest 获取 rank
+  router.get('/api/contest_ranklist/:cid', jwt, controller.contest.getContestRankList);
 };

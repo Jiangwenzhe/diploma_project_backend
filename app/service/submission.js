@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-04-13 09:25:22
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-05-03 09:56:47
+ * @LastEditTime: 2020-05-07 16:24:05
  */
 'use strict';
 
@@ -14,6 +14,15 @@ class SubmissionService extends Service {
   async create(payload) {
     const { ctx, app } = this;
     try {
+      const { status } = payload;
+      if (status === 2) {
+        const { pid, cid } = payload;
+        const contest = await ctx.model.Contest.findOne({ cid });
+        const { problemList } = contest;
+        if (!problemList.includes(pid)) {
+          ctx.throw(400, '当前比赛没有包含该题目');
+        }
+      }
       const submission = await ctx.model.Submission.create(payload);
       // 如果以后采用了消息队列的写法，就直接返回 submission_id
       // return { submission_id: submission._id };
@@ -68,13 +77,15 @@ class SubmissionService extends Service {
       await service.problem.createStatusInfo(problem_id, -2);
       // 为用户添加 submit resolve
       await service.user.createStatusInfo(uid, -2, pid);
-      const update_submission_response = await service.submission.update(submission_id, {
-        result: -2,
-        status_info: {
-          score: 0,
-          error_info: judge_result_info,
-        },
-      }
+      const update_submission_response = await service.submission.update(
+        submission_id,
+        {
+          result: -2,
+          status_info: {
+            score: 0,
+            error_info: judge_result_info,
+          },
+        }
       );
       return update_submission_response;
     }
@@ -126,7 +137,17 @@ class SubmissionService extends Service {
   // 获取所有题目，需要支持 antd 分页
   async index(payload) {
     const { ctx } = this;
-    const { uid, pid, current, pageSize, status } = payload;
+    const {
+      uid,
+      pid,
+      current,
+      pageSize,
+      status,
+      cid,
+      username,
+      result,
+      language,
+    } = payload;
     const query = {};
     let res = [];
     let total = 0;
@@ -138,9 +159,24 @@ class SubmissionService extends Service {
     if (pid) {
       query.pid = pid;
     }
+    if (cid) {
+      query.cid = cid;
+    }
+    if (username) {
+      query.username = new RegExp(username, 'i');
+    }
+    if (result && result + 4) {
+      query.result = result;
+    }
+    if (language) {
+      query.language = language;
+      if (language === 'Cpp') {
+        query.language = 'C++';
+      }
+    }
     // query
     if (status) {
-      query.status = status;
+      query.status = Number(status);
     } else {
       query.status = { $ne: 2 };
     }
@@ -151,7 +187,18 @@ class SubmissionService extends Service {
       .limit(Number(pageSize))
       .sort({ create_at: -1 })
       .exec();
-    return { total, list: res, pageSize, current };
+    const getUserListDetail = res.map(async submission => {
+      const { uid } = submission;
+      const itemObject = submission.toObject();
+      const user = await ctx.model.User.findOne(
+        { uid },
+        { _id: 1, name: 1, submit: 1, solve: 1 }
+      );
+      itemObject.userInfo = user;
+      return itemObject;
+    });
+    const submissionListDetail = await Promise.all(getUserListDetail);
+    return { total, list: submissionListDetail, pageSize, current };
   }
 
   // 通过 id 查询 submission
@@ -166,7 +213,6 @@ class SubmissionService extends Service {
     const user_submission = await ctx.model.Submission.find({ uid }).exec();
     return user_submission;
   }
-
 }
 
 module.exports = SubmissionService;

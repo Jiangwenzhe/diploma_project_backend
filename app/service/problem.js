@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-03-26 14:55:02
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-05-08 09:18:27
+ * @LastEditTime: 2020-05-08 23:08:49
  */
 
 'use strict';
@@ -66,7 +66,6 @@ class ProblemsService extends Service {
   // ======================================= search =======================================
   // 获取所有题目，需要支持 antd 分页
   async index(payload) {
-    // TODO: 需要添加关键字模糊搜索 注意参考 leetcode 的实现
     const { ctx } = this;
     const { current, pageSize, title, tag, visible, difficulty } = payload;
     const query = {};

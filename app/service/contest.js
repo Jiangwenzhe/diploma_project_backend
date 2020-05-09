@@ -2,11 +2,24 @@
  * @Author: Wenzhe
  * @Date: 2020-05-03 12:54:16
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-05-07 16:11:00
+ * @LastEditTime: 2020-05-09 16:50:58
  */
 'use strict';
 
 const Service = require('egg').Service;
+const moment = require('moment');
+
+const makeDuration = (a, b) => {
+  const ms = moment.duration(
+    moment(a).diff(moment(b)));
+  return `${Math.trunc(ms.asHours())}:${ms.minutes()}:${ms.seconds()}`;
+};
+
+const calculateDurationSecond = (a, b) => {
+  const ms = moment.duration(
+    moment(a).diff(moment(b)));
+  return ms.asSeconds();
+};
 
 class ContestService extends Service {
   // 创建比赛
@@ -248,30 +261,73 @@ class ContestService extends Service {
     )
       .lean()
       .exec();
+    const firstAcList = {};
+    problemList.map(pid => {
+      const singleProblemSolution = submissionList.filter(submission => submission.pid === pid);
+      for (let i = 0; i < singleProblemSolution.length; i++) {
+        const submission = singleProblemSolution[i];
+        // 当答案为 wrong answer 时 waCount++
+        if (submission.result === 0) {
+          singleProblemSolution[i].is_first_ac = true;
+          firstAcList[singleProblemSolution[i].pid] = singleProblemSolution[i]._id;
+          break;
+        }
+      }
+      return null;
+    });
+    console.log(firstAcList);
     const userSubmissionList = verifyList.map(uid => {
       const singleUserSubmission = submissionList.filter(
         submission => submission.uid === uid
       );
+      let solveCount = 0;
+      let total_time = 0;
       const problemSubmission = problemList.map(pid => {
         const singleProblemSolution = singleUserSubmission.filter(submission => submission.pid === pid);
         let ac_time = null;
-        let waCount = 0;
+        let wa_count = 0;
+        let is_first_ac = false;
         for (let i = 0; i < singleProblemSolution.length; i++) {
           const submission = singleProblemSolution[i];
+          console.log(submission);
           // 当答案为 wrong answer 时 waCount++
           if (submission.result === -1) {
-            waCount++;
+            wa_count++;
+          }
+          if (firstAcList[pid] === submission._id) {
+            is_first_ac = true;
           }
           if (submission.result === 0) {
+            solveCount++;
             ac_time = submission.create_at;
+            total_time += calculateDurationSecond(ac_time, start_time);
             break;
           }
         }
-        return { [pid]: { waCount, ac_time } };
+        const duration = ac_time ? makeDuration(ac_time, start_time) : null;
+        return { [pid]: { wa_count, ac_time: duration, is_first_ac } };
       });
-      return { [uid]: problemSubmission };
+      return { uid, list: problemSubmission, solveCount, total_time };
     });
-    return userSubmissionList;
+    userSubmissionList.sort((a, b) => {
+      console.log(a.solveCount, b.solveCount);
+      if (a.solveCount === b.solveCount) {
+        return a.total_time - b.total_time;
+      }
+      return b.solveCount - a.solveCount;
+    });
+    const userSubmissionListAddUserInfo = userSubmissionList.map(async submissionInfo => {
+      const { uid } = submissionInfo;
+      const itemObject = submissionInfo;
+      const user = await ctx.model.User.findOne(
+        { uid },
+        { _id: 1, name: 1, submit: 1, solve: 1 }
+      );
+      itemObject.userInfo = user;
+      return itemObject;
+    });
+    const ranklist = await Promise.all(userSubmissionListAddUserInfo);
+    return ranklist;
   }
 }
 

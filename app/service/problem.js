@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-03-26 14:55:02
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-05-03 08:48:54
+ * @LastEditTime: 2020-05-08 09:18:27
  */
 
 'use strict';
@@ -68,7 +68,7 @@ class ProblemsService extends Service {
   async index(payload) {
     // TODO: 需要添加关键字模糊搜索 注意参考 leetcode 的实现
     const { ctx } = this;
-    const { current, pageSize, title, tag, visible } = payload;
+    const { current, pageSize, title, tag, visible, difficulty } = payload;
     const query = {};
     let res = [];
     let total = 0;
@@ -79,6 +79,9 @@ class ProblemsService extends Service {
     }
     if (visible) {
       query.visible = visible;
+    }
+    if (difficulty) {
+      query.difficulty = difficulty;
     }
     // if ()
     if (tag) {

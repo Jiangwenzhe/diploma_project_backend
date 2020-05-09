@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-04-13 09:25:22
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-05-07 16:24:05
+ * @LastEditTime: 2020-05-08 23:08:05
  */
 'use strict';
 
@@ -199,6 +199,26 @@ class SubmissionService extends Service {
     });
     const submissionListDetail = await Promise.all(getUserListDetail);
     return { total, list: submissionListDetail, pageSize, current };
+  }
+
+  // 获取所有题目，需要支持 antd 分页
+  async getUserQuestionsSubmittedRecords(payload) {
+    const { ctx } = this;
+    const {
+      uid,
+      pid,
+    } = payload;
+    const query = {};
+    if (uid) {
+      query.uid = uid;
+    }
+    if (pid) {
+      query.pid = pid;
+    }
+    // 获取所有题目的数量
+    const total = await ctx.model.Submission.countDocuments(query).exec();
+    const submissions = await ctx.model.Submission.find(query);
+    return { total, list: submissions };
   }
 
   // 通过 id 查询 submission

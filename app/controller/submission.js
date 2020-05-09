@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-04-13 09:27:52
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-04-23 12:10:02
+ * @LastEditTime: 2020-05-08 23:04:36
  */
 'use strict';
 
@@ -34,6 +34,19 @@ class SubmissionController extends Controller {
     const payload = ctx.query;
     // 调用 Service 进行业务处理
     const res = await service.submission.index(payload);
+    // 设置响应内容和响应状态码
+    ctx.helper.success({ ctx, res });
+  }
+
+  // 获取 单个问题 单个 user 的 submission
+  async getUserQuestionsSubmittedRecords() {
+    const { ctx, service } = this;
+    // 组装参数
+    const payload = ctx.query;
+    // 调用 Service 进行业务处理
+    const res = await service.submission.getUserQuestionsSubmittedRecords(
+      payload
+    );
     // 设置响应内容和响应状态码
     ctx.helper.success({ ctx, res });
   }

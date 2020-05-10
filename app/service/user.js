@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-03-16 18:53:20
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-04-27 09:47:26
+ * @LastEditTime: 2020-05-10 14:18:09
  */
 'use strict';
 
@@ -109,12 +109,12 @@ class UserService extends Service {
       {
         solve: new_solve,
         submit: new_submit,
-        submit_list: [...new_submit_list],
-        solved_list: [...new_solved_list],
+        submit_list: [ ...new_submit_list ],
+        solved_list: [ ...new_solved_list ],
         // different_set 会执行一个差集的操作
-        failed_list: [...difference_set(new_failed_list, new_solved_list)],
+        failed_list: [ ...difference_set(new_failed_list, new_solved_list) ],
       },
-      { new: true },
+      { new: true }
     );
     return res;
   }
@@ -137,10 +137,10 @@ class UserService extends Service {
       }
     }
     return {
-      submit_list: [...submit_list],
-      solved_list: [...solved_list],
+      submit_list: [ ...submit_list ],
+      solved_list: [ ...solved_list ],
       // different_set 会执行一个差集的操作
-      failed_list: [...difference_set(failed_list, solved_list)],
+      failed_list: [ ...difference_set(failed_list, solved_list) ],
     };
   }
 }

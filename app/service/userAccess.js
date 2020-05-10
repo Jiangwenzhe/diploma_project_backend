@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-03-17 16:14:04
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-04-18 14:21:15
+ * @LastEditTime: 2020-05-10 14:21:11
  */
 'use strict';
 
@@ -34,6 +34,7 @@ class UserAccessService extends Service {
     const user = await service.user.findById(_id);
     const { uid } = user;
     const { solved_list, failed_list, submit_list } = await service.user.findUserSubmitProblemInfo(uid);
+    const problemListCount = await ctx.model.Problem.countDocuments({ visible: true }).exec();
     if (!user) {
       ctx.throw(404, 'user is not found');
     }
@@ -43,6 +44,7 @@ class UserAccessService extends Service {
         submit_list,
         solved_list,
         failed_list,
+        problemListCount,
       },
     };
   }

@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-05-03 12:54:16
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-05-09 16:50:58
+ * @LastEditTime: 2020-05-10 19:05:45
  */
 'use strict';
 
@@ -248,9 +248,9 @@ class ContestService extends Service {
 
   // ================== contest rank 操作 ===================
   async getContestRankList(cid) {
-    const { ctx, service } = this;
+    const { ctx } = this;
     const contestInfo = await ctx.model.Contest.findOne({ cid });
-    const { start_time, end_time, verifyList, problemList } = contestInfo;
+    const { start_time, verifyList, problemList } = contestInfo;
     console.log('-------------');
     console.log(verifyList);
     // verifyList

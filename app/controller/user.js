@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-03-16 19:11:42
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-04-25 16:56:44
+ * @LastEditTime: 2020-05-11 12:13:28
  */
 'use strict';
 
@@ -70,6 +70,19 @@ class UserController extends Controller {
     const msg = res === null ? '没有该用户' : null;
     ctx.helper.success({ ctx, res, msg });
   }
+
+  // 分页获取 user
+  async index() {
+    const { ctx, service } = this;
+    // 组装参数
+    const payload = ctx.query;
+    // 调用 Service 进行业务处理
+    const res = await service.user.index(payload);
+    // 设置响应内容和响应状态码
+    ctx.helper.success({ ctx, res });
+  }
+
+
 }
 
 module.exports = UserController;

@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-03-16 18:53:20
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-05-10 14:18:09
+ * @LastEditTime: 2020-05-11 12:12:26
  */
 'use strict';
 
@@ -55,6 +55,27 @@ class UserService extends Service {
     return ctx.model.User.findByIdAndUpdate(_id, payload, {
       new: true,
     });
+  }
+
+  // 分页获取用户
+  async index(payload) {
+    const { ctx } = this;
+    const { current, pageSize, name } = payload;
+    const query = {};
+    let res = [];
+    let total = 0;
+    // 计算skip
+    const skip = (Number(current) - 1) * Number(pageSize || 10);
+    if (name) {
+      query.name = new RegExp(name, 'i');
+    }
+    total = await ctx.model.User.countDocuments(query).exec();
+    res = await ctx.model.User.find(query)
+      .skip(skip)
+      .limit(Number(pageSize))
+      .sort()
+      .exec();
+    return { total, list: res, pageSize, current };
   }
 
   // comm ------------------------------------

@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-03-16 16:28:48
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-05-08 23:05:56
+ * @LastEditTime: 2020-05-11 12:13:51
  */
 'use strict';
 
@@ -21,6 +21,7 @@ module.exports = app => {
   // router.put('/api/user/access/resetPsw', app.jwt, controller.userAccess.resetPsw);
 
   // 用户 user 操作相关路由 =============================
+  router.get('/api/user', controller.user.index);
   router.post('/api/user', controller.user.createUser);
   router.delete('/api/user/:id', controller.user.destroyUser);
   router.get('/api/user/:id', controller.user.findSingleUserById);
@@ -86,4 +87,7 @@ module.exports = app => {
   router.get('/api/contest_problemDetail', jwt, controller.contest.getProblemInfoByCidAndPid);
   // contest 获取 rank
   router.get('/api/contest_ranklist/:cid', jwt, controller.contest.getContestRankList);
+
+  // home 操作相关路由
+  router.get('/api/home', controller.home.homeInfo);
 };

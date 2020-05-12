@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-03-16 16:28:48
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-05-11 12:13:51
+ * @LastEditTime: 2020-05-12 16:32:32
  */
 'use strict';
 
@@ -90,4 +90,5 @@ module.exports = app => {
 
   // home 操作相关路由
   router.get('/api/home', controller.home.homeInfo);
+  router.get('/api/log', controller.home.LogInfo);
 };

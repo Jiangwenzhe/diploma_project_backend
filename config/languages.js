@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-04-13 10:27:12
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-04-20 12:21:55
+ * @LastEditTime: 2020-05-13 14:03:32
  */
 'use strict';
 
@@ -56,7 +56,7 @@ const cpp_lang_config = {
     exe_name: 'main',
     max_cpu_time: 3000,
     max_real_time: 5000,
-    max_memory: 128 * 1024 * 1024,
+    max_memory: 512 * 1024 * 1024,
     compile_command:
       '/usr/bin/g++ -DONLINE_JUDGE -O2 -w -fmax-errors=3 -std=c++11 {src_path} -lm -o {exe_path}',
   },

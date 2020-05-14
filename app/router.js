@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-03-16 16:28:48
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-05-12 16:32:32
+ * @LastEditTime: 2020-05-14 13:01:08
  */
 'use strict';
 
@@ -27,6 +27,10 @@ module.exports = app => {
   router.get('/api/user/:id', controller.user.findSingleUserById);
   router.get('/api/userinfo/:uid', controller.user.findSingleUserByUid);
   router.put('/api/user/:id', controller.user.updateUser);
+  router.get('/api/user_discuss', jwt, controller.user.getUserCollection);
+  router.post('/api/user_discuss', jwt, controller.user.userCollectDiscuss);
+  router.delete('/api/user_discuss/:did', jwt, controller.user.cancelUserCollection);
+
 
   // 题目 problem 操作相关路由 =============================
   router.post('/api/problem', controller.problem.createProblem);

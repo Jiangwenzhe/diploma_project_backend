@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-03-16 19:11:42
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-05-11 12:13:28
+ * @LastEditTime: 2020-05-14 12:57:53
  */
 'use strict';
 
@@ -82,7 +82,27 @@ class UserController extends Controller {
     ctx.helper.success({ ctx, res });
   }
 
+  // user 收藏 collect
+  async userCollectDiscuss() {
+    const { ctx, service } = this;
+    const payload = ctx.request.body || {};
+    const { did } = payload;
+    const res = await service.user.userCollectDiscuss(did);
+    ctx.helper.success({ ctx, res });
+  }
 
+  async cancelUserCollection() {
+    const { ctx, service } = this;
+    const { did } = ctx.params;
+    const res = await service.user.cancelUserCollection(did);
+    ctx.helper.success({ ctx, res });
+  }
+
+  async getUserCollection() {
+    const { ctx, service } = this;
+    const res = await service.user.getUserCollection();
+    ctx.helper.success({ ctx, res });
+  }
 }
 
 module.exports = UserController;

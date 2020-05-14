@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-03-16 18:53:20
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-05-11 12:12:26
+ * @LastEditTime: 2020-05-14 13:17:58
  */
 'use strict';
 
@@ -163,6 +163,66 @@ class UserService extends Service {
       // different_set 会执行一个差集的操作
       failed_list: [ ...difference_set(failed_list, solved_list) ],
     };
+  }
+
+  // discuss 相关
+  // 收藏文章
+  async userCollectDiscuss(discuss_id) {
+    const { ctx } = this;
+    const { _id } = ctx.state.user.data;
+    try {
+      const result = await ctx.model.User.updateOne(
+        { _id },
+        {
+          $addToSet: {
+            collect_list: discuss_id,
+          },
+        }
+      );
+      if (result.ok === 1) {
+        return '用户添加收藏成功';
+      }
+    } catch (e) {
+      ctx.throw(400, e);
+    }
+  }
+
+  // 移除收藏文章
+  async cancelUserCollection(discuss_id) {
+    const { ctx } = this;
+    const { _id } = ctx.state.user.data;
+    try {
+      const result = await ctx.model.User.updateOne(
+        { _id },
+        {
+          $pull: {
+            collect_list: discuss_id,
+          },
+        }
+      );
+      if (result.ok === 1) {
+        return '用户取消收藏成功';
+      }
+    } catch (e) {
+      ctx.throw(400, e);
+    }
+  }
+
+  // 获取用户收藏文章
+  async getUserCollection() {
+    const { ctx, service } = this;
+    const { _id } = ctx.state.user.data;
+    const { collect_list } = await ctx.model.User.findById(_id);
+    if (collect_list.length === 0) {
+      return [];
+    }
+    const reversed_collect_list = collect_list.reverse();
+    const did_to_discuss = reversed_collect_list.map(async did => {
+      const discuss = await service.discuss.findById(did);
+      return discuss;
+    });
+    const user_collect_list = await Promise.all(did_to_discuss);
+    return { list: user_collect_list, total: collect_list.length };
   }
 }
 

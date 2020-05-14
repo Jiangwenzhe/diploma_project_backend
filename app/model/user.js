@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-03-16 16:54:00
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-04-24 16:44:02
+ * @LastEditTime: 2020-05-14 12:21:21
  */
 'use strict';
 
@@ -74,6 +74,10 @@ module.exports = app => {
       default: [],
     },
     solved_list: {
+      type: Array,
+      default: [],
+    },
+    collect_list: {
       type: Array,
       default: [],
     },

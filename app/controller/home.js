@@ -2,13 +2,12 @@
  * @Author: Wenzhe
  * @Date: 2020-03-16 16:28:48
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-05-12 17:32:40
+ * @LastEditTime: 2020-05-14 09:51:40
  */
 'use strict';
 
 const Controller = require('egg').Controller;
 const moment = require('moment');
-const fs = require('fs');
 const path = require('path');
 const readLastLines = require('read-last-lines');
 

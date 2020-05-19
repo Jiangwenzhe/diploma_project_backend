@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-03-16 19:11:42
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-05-14 12:57:53
+ * @LastEditTime: 2020-05-14 16:04:08
  */
 'use strict';
 
@@ -87,6 +87,9 @@ class UserController extends Controller {
     const { ctx, service } = this;
     const payload = ctx.request.body || {};
     const { did } = payload;
+    if (!did.match(/^[0-9a-fA-F]{24}$/)) {
+      ctx.throw(400, 'id参数错误');
+    }
     const res = await service.user.userCollectDiscuss(did);
     ctx.helper.success({ ctx, res });
   }

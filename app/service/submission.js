@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-04-13 09:25:22
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-05-08 23:08:05
+ * @LastEditTime: 2020-06-07 13:05:30
  */
 'use strict';
 
@@ -180,24 +180,29 @@ class SubmissionService extends Service {
     } else {
       query.status = { $ne: 2 };
     }
-    // 获取所有题目的数量
+    // 获取所有submission的数量
     total = await ctx.model.Submission.countDocuments(query).exec();
     res = await ctx.model.Submission.find(query)
       .skip(skip)
       .limit(Number(pageSize))
       .sort({ create_at: -1 })
       .exec();
-    const getUserListDetail = res.map(async submission => {
-      const { uid } = submission;
+    const getUserAndProblemListDetail = res.map(async submission => {
+      const { uid, pid } = submission;
       const itemObject = submission.toObject();
       const user = await ctx.model.User.findOne(
         { uid },
         { _id: 1, name: 1, submit: 1, solve: 1 }
       );
+      const problem = await ctx.model.Problem.findOne(
+        { pid },
+        { _id: 1, title: 1 }
+      );
       itemObject.userInfo = user;
+      itemObject.problemInfo = problem;
       return itemObject;
     });
-    const submissionListDetail = await Promise.all(getUserListDetail);
+    const submissionListDetail = await Promise.all(getUserAndProblemListDetail);
     return { total, list: submissionListDetail, pageSize, current };
   }
 

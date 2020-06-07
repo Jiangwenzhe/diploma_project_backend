@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-04-02 15:58:23
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-05-03 13:57:39
+ * @LastEditTime: 2020-06-07 18:57:35
  */
 'use strict';
 
@@ -15,8 +15,10 @@ class DiscussService extends Service {
     const { ctx, service } = this;
     const _id = ctx.state.user.data._id;
     const { tags } = payload;
-    for (let i = 0; i < tags.length; i++) {
-      await service.discussTag.create({ name: tags[i] });
+    if (tags) {
+      for (let i = 0; i < tags.length; i++) {
+        await service.discussTag.create({ name: tags[i] });
+      }
     }
     const newPayload = {
       ...payload,
@@ -276,7 +278,9 @@ class DiscussService extends Service {
         { $pull: { comments: { _id: comment_id } } },
         { multi: true }
       );
-      return result;
+      if (result.ok === 1) {
+        return '删除评论成功';
+      }
     } catch (e) {
       ctx.throw(400, e);
     }

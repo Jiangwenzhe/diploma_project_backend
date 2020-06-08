@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-04-02 16:00:24
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-06-08 10:08:13
+ * @LastEditTime: 2020-06-08 11:45:51
  */
 'use strict';
 
@@ -112,6 +112,18 @@ class DiscussController extends Controller {
     const { id } = ctx.params;
     const payload = ctx.request.body || {};
     const res = await service.discuss.joinDiscuss(id, payload);
+    ctx.helper.success({ ctx, res });
+  }
+
+  // 删除单条 discuss
+  async deleteDiscuss() {
+    const { ctx, service } = this;
+    const { id } = ctx.params;
+    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+      ctx.throw(400, 'id参数错误');
+    }
+    const res = await service.discuss.deleteDiscuss(id);
+    // 设置响应内容和响应状态码
     ctx.helper.success({ ctx, res });
   }
 

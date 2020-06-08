@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-04-02 15:58:23
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-06-08 10:22:41
+ * @LastEditTime: 2020-06-08 15:46:51
  */
 'use strict';
 
@@ -358,16 +358,21 @@ class DiscussService extends Service {
     }
   }
 
-  // 删除评论
+  // 删除讨论
   async deleteDiscuss(discuss_id) {
+    console.log('intp deleteDiscuss');
+    console.log(discuss_id);
     const { ctx } = this;
     try {
-      const result = await ctx.model.Discuss.updateOne(
-        { 'comments._id': comment_id },
-        { $pull: { comments: { _id: discuss_id } } },
+      const result = await ctx.model.Discuss.update(
+        {},
+        { $pull: { discussList: { _id: discuss_id } } },
         { multi: true }
       );
-      return result;
+      console.log(result);
+      if (result.ok === 1) {
+        return '删除讨论成功';
+      }
     } catch (e) {
       ctx.throw(400, e);
     }

@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-04-02 15:58:23
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-06-07 18:57:35
+ * @LastEditTime: 2020-06-08 10:22:41
  */
 'use strict';
 
@@ -118,9 +118,8 @@ class DiscussService extends Service {
         );
         itemObject.authorInfo = authorInfo;
         if (itemObject.replys.length > 0) {
-          console.log(itemObject.replys);
           const new_replyList = itemObject.replys.map(async item => {
-            console.log(item);
+            // console.log(item);
             const itemObject = item;
             const authorInfo = await ctx.model.User.findById(
               itemObject.comment_user_id,
@@ -247,7 +246,7 @@ class DiscussService extends Service {
       ...payload,
       comment_user_id: user_id,
     };
-    console.log('------------', newPayload);
+    // console.log('------------', newPayload);
     try {
       // const res = await ctx.model.Discuss.findById(duscuss_id).exec(function(err, discuss) {
       //   discuss.comments.push(payload);
@@ -310,6 +309,30 @@ class DiscussService extends Service {
     }
   }
 
+
+  // 删除回复
+  async deleteReply(comment_id, reply_id) {
+    console.log('into deleteReply');
+    console.log(comment_id, reply_id);
+    const { ctx } = this;
+    try {
+      const result = await ctx.model.Discuss.updateOne(
+        { 'comments._id': comment_id },
+        {
+          $pull: {
+            'comments.$.replys': { _id: reply_id },
+          },
+        },
+        { multi: true }
+      );
+      if (result.ok === 1) {
+        return '删除回复成功';
+      }
+    } catch (e) {
+      ctx.throw(400, e);
+    }
+  }
+
   // ==================================== discuss ====================================
   async joinDiscuss(duscuss_id, payload) {
     const { ctx } = this;
@@ -339,8 +362,8 @@ class DiscussService extends Service {
   async deleteDiscuss(discuss_id) {
     const { ctx } = this;
     try {
-      const result = await ctx.model.Discuss.update(
-        {},
+      const result = await ctx.model.Discuss.updateOne(
+        { 'comments._id': comment_id },
         { $pull: { comments: { _id: discuss_id } } },
         { multi: true }
       );

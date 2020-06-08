@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-03-16 16:28:48
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-05-14 13:01:08
+ * @LastEditTime: 2020-06-08 10:12:22
  */
 'use strict';
 
@@ -53,6 +53,7 @@ module.exports = app => {
   router.post('/api/discuss/comment/:id', jwt, controller.discuss.createComment);
   router.delete('/api/discuss/comment/:id', jwt, controller.discuss.deleteComment);
   router.post('/api/discuss/reply/:id', jwt, controller.discuss.createReply);
+  router.delete('/api/discuss_delete_reply', jwt, controller.discuss.deleteReply);
   router.post('/api/discuss/joindiscuss/:id', jwt, controller.discuss.joinDiscuss);
   // router.get('/api/discuss/like/:id', jwt, controller.discuss.like);
 

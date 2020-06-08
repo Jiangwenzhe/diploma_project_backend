@@ -2,7 +2,7 @@
  * @Author: Wenzhe
  * @Date: 2020-04-02 16:00:24
  * @LastEditors: Wenzhe
- * @LastEditTime: 2020-05-02 19:15:45
+ * @LastEditTime: 2020-06-08 10:08:13
  */
 'use strict';
 
@@ -75,7 +75,7 @@ class DiscussController extends Controller {
     ctx.helper.success({ ctx, res });
   }
 
-  // 删除单条文章
+  // 删除单条评论
   async deleteComment() {
     const { ctx, service } = this;
     const { id } = ctx.params;
@@ -94,6 +94,15 @@ class DiscussController extends Controller {
     const { id } = ctx.params;
     const payload = ctx.request.body || {};
     const res = await service.discuss.createReply(id, payload);
+    ctx.helper.success({ ctx, res });
+  }
+
+  // 删除单条回复
+  async deleteReply() {
+    const { ctx, service } = this;
+    const { comment_id, reply_id } = ctx.query;
+    const res = await service.discuss.deleteReply(comment_id, reply_id);
+    // 设置响应内容和响应状态码
     ctx.helper.success({ ctx, res });
   }
 
